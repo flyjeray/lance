@@ -1,32 +1,54 @@
 import { useState } from 'react';
-import {
-  parseTestMonorepoModelToText,
-  TestMonorepoModel,
-} from '@lance/shared/models/test';
-
-const TestMonorepoField: TestMonorepoModel = {
-  field_1: 'TestMonorepoField',
-  field_2: 12,
-};
+import { AuthAPI } from './api/routers/auth';
+import { LOCALSTORAGE_TOKEN_PATH } from './api';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [username, setUsername] = useState<string | null>(null);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const login = formData.get('login') as string;
+    const password = formData.get('password') as string;
+
+    const { data: response } = await AuthAPI.login({ login, password });
+
+    if (response.success) {
+      window.localStorage.setItem(LOCALSTORAGE_TOKEN_PATH, response.token);
+    }
+  };
+
+  const checkMe = async () => {
+    const { data: response } = await AuthAPI.me();
+
+    if (response.success) {
+      setUsername(response.name);
+    }
+  };
 
   return (
     <>
-      <h1>Vite + React</h1>
-      <p>{parseTestMonorepoModelToText(TestMonorepoField)}</p>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          id="login"
+          name="login"
+          placeholder="Login"
+          required
+        />
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Password"
+          required
+        />
+        <button type="submit">Sign In</button>
+      </form>
+
+      <button onClick={checkMe}>Me</button>
+      {username && <p>{username}</p>}
     </>
   );
 }
