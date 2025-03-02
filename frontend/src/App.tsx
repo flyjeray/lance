@@ -1,4 +1,13 @@
 import { useState } from 'react';
+import {
+  parseTestMonorepoModelToText,
+  TestMonorepoModel,
+} from '@lance/shared/models/test';
+
+const TestMonorepoField: TestMonorepoModel = {
+  field_1: 'TestMonorepoField',
+  field_2: 12,
+};
 
 function App() {
   const [count, setCount] = useState(0);
@@ -6,6 +15,7 @@ function App() {
   return (
     <>
       <h1>Vite + React</h1>
+      <p>{parseTestMonorepoModelToText(TestMonorepoField)}</p>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}

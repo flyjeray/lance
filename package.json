@@ -4,5 +4,11 @@
   },
   "devDependencies": {
     "husky": "^9.1.7"
-  }
+  },
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend",
+    "shared"
+  ]
 }
