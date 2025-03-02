@@ -1,0 +1,2 @@
+(cd backend && yarn lint:fix)
+git update-index --again
