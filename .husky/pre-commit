@@ -1,4 +1,5 @@
 echo "Husky Pre-Commit Script"
 (cd backend && yarn lint:fix)
 (cd frontend && yarn lint:fix)
+(cd shared && yarn lint:fix)
 git update-index --again
