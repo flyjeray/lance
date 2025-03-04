@@ -1,0 +1,93 @@
+@use 'sass:map';
+@use '../../constants/theme.module.scss';
+
+$button-sizes: (
+  small: (
+    font-size: 14px,
+    padding: 8px 16px,
+    border-radius: 12px,
+  ),
+  medium: (
+    font-size: 16px,
+    padding: 10px 20px,
+    border-radius: 14px,
+  ),
+  large: (
+    font-size: 18px,
+    padding: 12px 24px,
+    border-radius: 16px,
+  ),
+);
+
+$button-styles: (
+  primary: (
+    text-color: theme.$lightTextColor,
+    background-color: theme.$primary,
+    hover-color: theme.$primaryHover,
+    outline: none,
+    hover-outline: none,
+  ),
+  alternative: (
+    text-color: theme.$lightTextColor,
+    background-color: theme.$alternative,
+    hover-color: theme.$alternativeHover,
+    outline: none,
+    hover-outline: none,
+  ),
+  outlined: (
+    text-color: theme.$primary,
+    background-color: white,
+    hover-color: white,
+    outline: 1px solid theme.$primary,
+    hover-outline: 1px solid theme.$primaryHover,
+  ),
+);
+
+$button-widths: (
+  fit: (
+    width: auto,
+  ),
+  full: (
+    width: 100%,
+  ),
+);
+
+@mixin btn($size, $color, $width) {
+  $font-size: map.get(map.get($button-sizes, $size), font-size);
+  $padding: map.get(map.get($button-sizes, $size), padding);
+  $border-radius: map.get(map.get($button-sizes, $size), border-radius);
+
+  $text-color: map.get(map.get($button-styles, $color), text-color);
+  $background-color: map.get(map.get($button-styles, $color), background-color);
+  $hover-color: map.get(map.get($button-styles, $color), hover-color);
+  $outline: map.get(map.get($button-styles, $color), outline);
+  $hover-outline: map.get(map.get($button-styles, $color), hover-outline);
+
+  $width: map.get(map.get($button-widths, $width), width);
+
+  background-color: $background-color;
+  color: $text-color;
+  border: none;
+  outline: $outline;
+  transition: background-color 0.15s;
+  font-size: $font-size;
+  border-radius: $border-radius;
+  padding: $padding;
+  width: $width;
+
+  &:hover {
+    cursor: pointer;
+    background-color: $hover-color;
+    outline: $hover-outline;
+  }
+}
+
+@each $size, $size-values in $button-sizes {
+  @each $color, $color-values in $button-styles {
+    @each $width, $width-values in $button-widths {
+      .btn-#{$size}-#{$color}-#{$width} {
+        @include btn($size, $color, $width);
+      }
+    }
+  }
+}
