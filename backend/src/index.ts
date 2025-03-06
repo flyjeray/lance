@@ -10,6 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/auth', routers.auth);
+app.use('/orders', routers.orders);
 
 const startServer = async () => {
   await connectToDatabase();
