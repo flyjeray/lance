@@ -3,14 +3,15 @@ import cors from 'cors';
 import { config } from './config';
 import { connectToDatabase } from './utils/databaseConnection';
 import routers from './routers';
+import APIEndpoints from '@lance/shared/constants/endpoints';
 
 const app: Application = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.use('/auth', routers.auth);
-app.use('/orders', routers.orders);
+app.use(APIEndpoints.auth.prefix, routers.auth);
+app.use(APIEndpoints.orders.prefix, routers.orders);
 
 const startServer = async () => {
   await connectToDatabase();
