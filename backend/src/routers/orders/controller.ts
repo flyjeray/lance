@@ -1,9 +1,13 @@
 import {
+  PaginatedAPIResponse,
+  PaginationPayload,
+} from '@lance/shared/models/api/general';
+import {
   CreateOrderPayload,
   CreateOrderResponse,
 } from '@lance/shared/models/api/orders';
 import { ClientModel } from '@lance/shared/models/client';
-import { OrderModel } from '@lance/shared/models/order';
+import { Order, OrderModel } from '@lance/shared/models/order';
 import { Request, Response } from 'express';
 
 export class OrdersController {
@@ -25,6 +29,33 @@ export class OrdersController {
       const order = new OrderModel({ title, description, client });
       const saved = await order.save();
       return res.status(200).json({ success: true, data: saved });
+    } catch (error) {
+      return res.status(400).json({ success: false, error });
+    }
+  };
+
+  static get = async (
+    req: Request<object, object, PaginationPayload>,
+    res: Response<PaginatedAPIResponse<Order[]>>
+  ) => {
+    const { page = 1, perPage = 10 } = req.body;
+
+    try {
+      const clients = await OrderModel.find()
+        .skip((page - 1) * perPage)
+        .limit(perPage);
+      const totalClients = await OrderModel.countDocuments();
+
+      return res.status(200).json({
+        success: true,
+        data: clients,
+        pagination: {
+          total: totalClients,
+          page: page,
+          perPage: perPage,
+          totalPages: Math.ceil(totalClients / perPage),
+        },
+      });
     } catch (error) {
       return res.status(400).json({ success: false, error });
     }

@@ -16,4 +16,6 @@ router.post(
   ClientsController.create
 );
 
+router.get(endpoints.get, AuthMiddleware.checkAuth, ClientsController.get);
+
 export { router as ClientsRouter };

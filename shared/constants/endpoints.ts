@@ -17,12 +17,14 @@ const APIEndpoints = {
     prefix: '/orders',
     endpoints: {
       create: '/create',
+      get: '/get',
     },
   },
   clients: {
     prefix: '/clients',
     endpoints: {
       create: '/create',
+      get: '/get',
     },
   },
 } as const satisfies APIStructure;
