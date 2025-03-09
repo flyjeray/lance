@@ -1,9 +1,10 @@
-import { Document, Schema, model } from 'mongoose';
+import { Document, Schema, Types, model } from 'mongoose';
 
 export type Order = {
   title: string;
   description: string;
   is_completed: boolean;
+  client: Types.ObjectId;
 };
 
 type OrderDocument = Document & Order;
@@ -19,6 +20,11 @@ const orderSchema = new Schema<OrderDocument>({
   is_completed: {
     type: Boolean,
     default: false,
+    required: true,
+  },
+  client: {
+    type: Schema.Types.ObjectId,
+    ref: 'clients',
     required: true,
   },
 });

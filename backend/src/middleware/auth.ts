@@ -2,7 +2,6 @@ import jwt from 'jsonwebtoken';
 import { UserModel } from '@lance/shared/models/user';
 import { Request, Response, NextFunction } from 'express';
 import { config } from '@/config';
-import { body, validationResult } from 'express-validator';
 import { APIResponse } from '@lance/shared/models/api/general';
 
 export type VerifiedUserRequest = Request & {
@@ -10,18 +9,6 @@ export type VerifiedUserRequest = Request & {
 };
 
 class AuthMiddleware {
-  static validateLoginCredentials = [
-    body('login').notEmpty().withMessage('Login is required'),
-    body('password').notEmpty().withMessage('Password is required'),
-    (req: Request, res: Response<APIResponse<unknown>>, next: NextFunction) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(422).json({ success: false, error: errors.array() });
-      }
-      next();
-    },
-  ];
-
   static checkAuth = async (
     req: Request,
     res: Response<APIResponse<unknown>>,

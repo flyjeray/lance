@@ -19,6 +19,12 @@ const APIEndpoints = {
       create: '/create',
     },
   },
+  clients: {
+    prefix: '/clients',
+    endpoints: {
+      create: '/create',
+    },
+  },
 } as const satisfies APIStructure;
 
 export default APIEndpoints;

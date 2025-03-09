@@ -12,6 +12,7 @@ app.use(express.json());
 
 app.use(APIEndpoints.auth.prefix, routers.auth);
 app.use(APIEndpoints.orders.prefix, routers.orders);
+app.use(APIEndpoints.clients.prefix, routers.clients);
 
 const startServer = async () => {
   await connectToDatabase();

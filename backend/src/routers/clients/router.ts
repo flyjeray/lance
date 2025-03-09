@@ -1,19 +1,19 @@
 import AuthMiddleware from '@/middleware/auth';
 import express from 'express';
-import { OrdersController } from './controller';
+import { ClientsController } from './controller';
 import APIEndpoints from '@lance/shared/constants/endpoints';
 import { validatePayload } from '@/utils/validation';
-import { CreateOrderPayload } from '@lance/shared/models/api/orders';
+import { CreateClientPayload } from '@lance/shared/models/api/clients';
 
 const router = express.Router();
 
-const { endpoints } = APIEndpoints.orders;
+const { endpoints } = APIEndpoints.clients;
 
 router.post(
   endpoints.create,
   AuthMiddleware.checkAuth,
-  validatePayload<CreateOrderPayload>(['title', 'client']),
-  OrdersController.create
+  validatePayload<CreateClientPayload>(['name']),
+  ClientsController.create
 );
 
-export { router as OrdersRouter };
+export { router as ClientsRouter };
