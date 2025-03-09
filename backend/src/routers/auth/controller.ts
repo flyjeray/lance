@@ -34,7 +34,7 @@ class AuthController {
       const token = jwt.sign({ userId: user._id }, config.authKey, {
         expiresIn: '1 hour',
       });
-      return res.json({ success: true, token, uid: user.id });
+      return res.json({ success: true, data: { token, uid: user.id } });
     } catch (error) {
       return res.status(400).json({ success: false, error });
     }
@@ -47,7 +47,7 @@ class AuthController {
       const user = await UserModel.findById(uid);
 
       if (user) {
-        return res.json({ success: true, name: user.login });
+        return res.json({ success: true, data: { name: user.login } });
       } else {
         return res.status(404).json({ success: false, error: 'No user found' });
       }

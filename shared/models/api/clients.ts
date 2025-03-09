@@ -5,4 +5,4 @@ export type CreateClientPayload = {
   name: string;
 };
 
-export type CreateClientResponse = APIResponse<{ data: Client }>;
+export type CreateClientResponse = APIResponse<Order>;

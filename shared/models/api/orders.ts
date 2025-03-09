@@ -7,4 +7,4 @@ export type CreateOrderPayload = {
   client: string;
 };
 
-export type CreateOrderResponse = APIResponse<{ data: Order }>;
+export type CreateOrderResponse = APIResponse<Order>;
