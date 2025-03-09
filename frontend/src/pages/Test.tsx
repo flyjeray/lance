@@ -11,7 +11,7 @@ export const TestPage = () => {
   return (
     <div>
       <h1>Test Page</h1>
-      <Button onClick={handleNavigate} color="alternative" />
+      <Button onClick={handleNavigate} variant="alternative" />
     </div>
   );
 };

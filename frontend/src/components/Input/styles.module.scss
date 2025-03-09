@@ -1,0 +1,71 @@
+@use 'sass:map';
+@use '../../constants/theme.module.scss';
+
+$input-variants: (
+  default: (
+    text-color: theme.$darkTextColor,
+    background-color: white,
+    focus-background-color: white,
+    border-color: theme.$primaryHover,
+    focus-border-color: theme.$primary,
+  ),
+  filled: (
+    text-color: theme.$lightTextColor,
+    background-color: theme.$primary,
+    focus-background-color: theme.$primaryHover,
+    border-color: theme.$primary,
+    focus-border-color: theme.$primary,
+  ),
+);
+
+$input-widths: (
+  fit: (
+    width: auto,
+  ),
+  full: (
+    width: 100%,
+  ),
+);
+
+@mixin input($style, $width) {
+  font-size: 16px;
+  padding: 8px 16px;
+  border-radius: 10px;
+
+  $text-color: map.get(map.get($input-variants, $style), text-color);
+  $background-color: map.get(
+    map.get($input-variants, $style),
+    background-color
+  );
+  $focus-background-color: map.get(
+    map.get($input-variants, $style),
+    focus-background-color
+  );
+  $border-color: map.get(map.get($input-variants, $style), border-color);
+  $focus-border-color: map.get(
+    map.get($input-variants, $style),
+    focus-border-color
+  );
+
+  $width: map.get(map.get($input-widths, $width), width);
+
+  background-color: $background-color;
+  color: $text-color;
+  border: 1px solid $border-color;
+  width: $width;
+  outline: none;
+  transition: border-color 0.15s;
+
+  &:focus {
+    background-color: $focus-background-color;
+    border-color: $focus-border-color;
+  }
+}
+
+@each $style, $style-variants in $input-variants {
+  @each $width, $width-values in $input-widths {
+    .input-#{$style}-#{$width} {
+      @include input($style, $width);
+    }
+  }
+}

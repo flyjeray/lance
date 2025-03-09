@@ -1,25 +1,7 @@
 @use 'sass:map';
 @use '../../constants/theme.module.scss';
 
-$button-sizes: (
-  small: (
-    font-size: 14px,
-    padding: 8px 16px,
-    border-radius: 12px,
-  ),
-  medium: (
-    font-size: 16px,
-    padding: 10px 20px,
-    border-radius: 14px,
-  ),
-  large: (
-    font-size: 18px,
-    padding: 12px 24px,
-    border-radius: 16px,
-  ),
-);
-
-$button-styles: (
+$button-variants: (
   primary: (
     text-color: theme.$lightTextColor,
     background-color: theme.$primary,
@@ -34,12 +16,19 @@ $button-styles: (
     outline: none,
     hover-outline: none,
   ),
-  outlined: (
+  primary-outlined: (
     text-color: theme.$primary,
     background-color: white,
     hover-color: white,
     outline: 1px solid theme.$primary,
     hover-outline: 1px solid theme.$primaryHover,
+  ),
+  alternative-outlined: (
+    text-color: theme.$alternative,
+    background-color: white,
+    hover-color: white,
+    outline: 1px solid theme.$alternative,
+    hover-outline: 1px solid theme.$alternativeHover,
   ),
 );
 
@@ -52,16 +41,15 @@ $button-widths: (
   ),
 );
 
-@mixin btn($size, $color, $width) {
-  $font-size: map.get(map.get($button-sizes, $size), font-size);
-  $padding: map.get(map.get($button-sizes, $size), padding);
-  $border-radius: map.get(map.get($button-sizes, $size), border-radius);
-
-  $text-color: map.get(map.get($button-styles, $color), text-color);
-  $background-color: map.get(map.get($button-styles, $color), background-color);
-  $hover-color: map.get(map.get($button-styles, $color), hover-color);
-  $outline: map.get(map.get($button-styles, $color), outline);
-  $hover-outline: map.get(map.get($button-styles, $color), hover-outline);
+@mixin btn($color, $width) {
+  $text-color: map.get(map.get($button-variants, $color), text-color);
+  $background-color: map.get(
+    map.get($button-variants, $color),
+    background-color
+  );
+  $hover-color: map.get(map.get($button-variants, $color), hover-color);
+  $outline: map.get(map.get($button-variants, $color), outline);
+  $hover-outline: map.get(map.get($button-variants, $color), hover-outline);
 
   $width: map.get(map.get($button-widths, $width), width);
 
@@ -70,9 +58,9 @@ $button-widths: (
   border: none;
   outline: $outline;
   transition: background-color 0.15s;
-  font-size: $font-size;
-  border-radius: $border-radius;
-  padding: $padding;
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 14px;
   width: $width;
 
   &:hover {
@@ -82,12 +70,10 @@ $button-widths: (
   }
 }
 
-@each $size, $size-values in $button-sizes {
-  @each $color, $color-values in $button-styles {
-    @each $width, $width-values in $button-widths {
-      .btn-#{$size}-#{$color}-#{$width} {
-        @include btn($size, $color, $width);
-      }
+@each $color, $color-values in $button-variants {
+  @each $width, $width-values in $button-widths {
+    .btn-#{$color}-#{$width} {
+      @include btn($color, $width);
     }
   }
 }

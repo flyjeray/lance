@@ -1,12 +1,14 @@
 import styles from './styles.module.scss';
 
-type ButtonSize = 'small' | 'medium' | 'large';
-type ButtonColor = 'primary' | 'alternative' | 'outlined';
+type ButtonVariant =
+  | 'primary'
+  | 'alternative'
+  | 'primary-outlined'
+  | 'alternative-outlined';
 type ButtonWidth = 'fit' | 'full';
 
 type Props = {
-  size?: ButtonSize;
-  color?: ButtonColor;
+  variant?: ButtonVariant;
   width?: ButtonWidth;
   onClick?: () => unknown;
   label?: string;
@@ -14,11 +16,10 @@ type Props = {
 };
 
 /**
- * Customizable button with mixin-based style that accepts different sizes, colors and widths.
+ * Customizable button with mixin-based style that accepts different variants and widths.
  */
 export const Button = ({
-  size = 'medium',
-  color = 'primary',
+  variant = 'primary',
   width = 'fit',
   onClick = () => {},
   label = 'Click',
@@ -28,7 +29,7 @@ export const Button = ({
     <button
       type={type}
       onClick={onClick}
-      className={styles[`btn-${size}-${color}-${width}`]}
+      className={styles[`btn-${variant}-${width}`]}
     >
       {label}
     </button>
