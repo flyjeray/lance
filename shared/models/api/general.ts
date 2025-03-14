@@ -1,5 +1,5 @@
-type SuccessfulAPIResponse<T> = { success: true; data: T };
-type FailedAPIResponse = { success: false; error: unknown };
+export type SuccessfulAPIResponse<T> = { data: T };
+type FailedAPIResponse = { error: unknown };
 
 export type PaginationPayload = {
   page: number;

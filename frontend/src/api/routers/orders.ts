@@ -1,13 +1,15 @@
-import {
-  CreateOrderPayload,
-  CreateOrderResponse,
-} from '@lance/shared/models/api/orders';
+import { CreateOrderPayload } from '@lance/shared/models/api/orders';
+import { Order } from '@lance/shared/models/order';
 import axiosInstance from '..';
 import APIEndpoints from '@lance/shared/constants/endpoints';
+import { SuccessfulAPIResponse } from '@lance/shared/models/api/general';
 
 const { prefix, endpoints } = APIEndpoints.orders;
 
 export class OrdersAPI {
   static create = (data: CreateOrderPayload) =>
-    axiosInstance.post<CreateOrderResponse>(prefix + endpoints.create, data);
+    axiosInstance.post<SuccessfulAPIResponse<Order>>(
+      prefix + endpoints.create,
+      data
+    );
 }

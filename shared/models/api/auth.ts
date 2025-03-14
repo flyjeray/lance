@@ -1,15 +1,13 @@
-import { APIResponse } from './general';
-
 export type AuthCredentials = {
   login: string;
   password: string;
 };
 
-export type AuthSignInResponse = APIResponse<{
+export type AuthSignInResponse = {
   token: string;
   uid: unknown;
-}>;
+};
 
-export type AuthMeResponse = APIResponse<{
+export type AuthMeResponse = {
   name: string;
-}>;
+};
