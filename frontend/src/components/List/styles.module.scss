@@ -1,0 +1,10 @@
+@use '../../constants/theme.module.scss';
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid theme.$primary;
+  border-radius: 8px;
+  padding: 12px;
+}
