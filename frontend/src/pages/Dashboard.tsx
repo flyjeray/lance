@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router';
-import { Button } from '../components/Button';
+import { Button } from '../components';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { AuthActions } from '../redux/slices/auth';
 
