@@ -1,6 +1,7 @@
-import { Document, Schema, model } from 'mongoose';
+import { Document, Schema, Types, model } from 'mongoose';
 
 export type Client = {
+  _id: Types.ObjectId;
   name: string;
   description: string;
 };

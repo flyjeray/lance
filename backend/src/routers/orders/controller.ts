@@ -37,13 +37,13 @@ export class OrdersController {
     const { page = 1, perPage = 10 } = req.body;
 
     try {
-      const clients = await OrderModel.find()
+      const orders = await OrderModel.find()
         .skip((page - 1) * perPage)
         .limit(perPage);
       const totalClients = await OrderModel.countDocuments();
 
       return res.status(200).json({
-        data: clients,
+        data: orders,
         pagination: {
           total: totalClients,
           page: page,

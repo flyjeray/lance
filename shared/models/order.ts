@@ -1,6 +1,7 @@
 import { Document, Schema, Types, model } from 'mongoose';
 
 export type Order = {
+  _id: Types.ObjectId;
   title: string;
   description: string;
   is_completed: boolean;

@@ -9,7 +9,7 @@ import { Client } from '@lance/shared/models/client';
 
 const { prefix, endpoints } = APIEndpoints.clients;
 
-export class OrdersAPI {
+export class ClientsAPI {
   static create = (data: CreateClientPayload) =>
     axiosInstance.post<SuccessfulAPIResponse<Client>>(
       prefix + endpoints.create,
