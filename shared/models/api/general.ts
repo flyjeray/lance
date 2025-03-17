@@ -13,6 +13,10 @@ export type PaginationResponse = {
   totalPages: number;
 };
 
+export type SingleEntityGetPayload = {
+  id: string;
+};
+
 export type APIResponse<T> = SuccessfulAPIResponse<T> | FailedAPIResponse;
 
 export type PaginatedAPIResponse<T> =

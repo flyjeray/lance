@@ -1,13 +1,12 @@
 import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router';
-import { HomePage } from './pages/Home';
 import { LOCALSTORAGE_TOKEN_PATH } from './api';
-import { DashboardPage } from './pages/Dashboard';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { AuthActions } from './redux/slices/auth';
+import { ClientPage, DashboardPage, HomePage, OrderPage } from './pages';
 
 const Protected = () => {
   const token =
@@ -47,6 +46,8 @@ const App = () => {
             <Route path="/" element={<HomePage />} />
             <Route element={<Protected />}>
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/client/:id" element={<ClientPage />} />
+              <Route path="/order/:id" element={<OrderPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

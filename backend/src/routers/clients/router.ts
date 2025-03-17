@@ -16,6 +16,16 @@ router.post(
   ClientsController.create
 );
 
-router.get(endpoints.get, AuthMiddleware.checkAuth, ClientsController.get);
+router.get(
+  endpoints.getPaginated,
+  AuthMiddleware.checkAuth,
+  ClientsController.getPaginated
+);
+
+router.get(
+  endpoints.getSingle,
+  AuthMiddleware.checkAuth,
+  ClientsController.getSingle
+);
 
 export { router as ClientsRouter };

@@ -8,11 +8,16 @@ export const ClientsTopList = () => {
 
   const fetchData = async () => {
     try {
-      const response = await ClientsAPI.get({ page: 1, perPage: 5 });
+      const response = await ClientsAPI.getPaginated({ page: 1, perPage: 5 });
       const clients = response.data.data;
 
       if (clients) {
-        setData(clients.map((client) => ({ title: client.name })));
+        setData(
+          clients.map((client) => ({
+            title: client.name,
+            link: `/client/${client._id}`,
+          }))
+        );
       }
     } catch (error) {
       console.error(error);

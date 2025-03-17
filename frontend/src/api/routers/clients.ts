@@ -2,6 +2,7 @@ import axiosInstance from '..';
 import APIEndpoints from '@lance/shared/constants/endpoints';
 import {
   PaginationPayload,
+  SingleEntityGetPayload,
   SuccessfulAPIResponse,
 } from '@lance/shared/models/api/general';
 import { CreateClientPayload } from '@lance/shared/models/api/clients';
@@ -16,8 +17,19 @@ export class ClientsAPI {
       data
     );
 
-  static get = (data: PaginationPayload) =>
-    axiosInstance.get<SuccessfulAPIResponse<Client[]>>(prefix + endpoints.get, {
-      params: data,
-    });
+  static getPaginated = (data: PaginationPayload) =>
+    axiosInstance.get<SuccessfulAPIResponse<Client[]>>(
+      prefix + endpoints.getPaginated,
+      {
+        params: data,
+      }
+    );
+
+  static getSingle = (data: SingleEntityGetPayload) =>
+    axiosInstance.get<SuccessfulAPIResponse<Client>>(
+      prefix + endpoints.getSingle,
+      {
+        params: data,
+      }
+    );
 }

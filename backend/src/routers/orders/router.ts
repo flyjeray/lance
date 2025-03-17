@@ -16,6 +16,16 @@ router.post(
   OrdersController.create
 );
 
-router.get(endpoints.get, AuthMiddleware.checkAuth, OrdersController.get);
+router.get(
+  endpoints.getPaginated,
+  AuthMiddleware.checkAuth,
+  OrdersController.get
+);
+
+router.get(
+  endpoints.getSingle,
+  AuthMiddleware.checkAuth,
+  OrdersController.getSingle
+);
 
 export { router as OrdersRouter };
