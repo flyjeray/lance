@@ -1,11 +1,11 @@
-import { Order } from '@lance/shared/models/order';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { Link, useParams } from 'react-router';
 import { OrdersAPI } from '../api/routers/orders';
+import { ExtendedOrder } from '@lance/shared/models/api/orders';
 
 export const OrderPage = () => {
   const params = useParams();
-  const [data, setData] = useState<Order | null>(null);
+  const [data, setData] = useState<ExtendedOrder | null>(null);
 
   const fetchData = async (id: string) => {
     try {
@@ -29,5 +29,16 @@ export const OrderPage = () => {
 
   if (!data) return <p>No data</p>;
 
-  return <p>{data.title}</p>;
+  return (
+    <div>
+      <p>{data.title}</p>
+      <Link
+        to={{
+          pathname: `/client/${data.client_id}`,
+        }}
+      >
+        <p>{data.client_data.name}</p>
+      </Link>
+    </div>
+  );
 };

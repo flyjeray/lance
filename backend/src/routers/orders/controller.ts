@@ -4,15 +4,18 @@ import {
   PaginationPayload,
   SingleEntityGetPayload,
 } from '@lance/shared/models/api/general';
-import { CreateOrderPayload } from '@lance/shared/models/api/orders';
+import {
+  CreateOrderPayload,
+  ExtendedOrder,
+} from '@lance/shared/models/api/orders';
 import { ClientModel } from '@lance/shared/models/client';
-import { Order, OrderModel } from '@lance/shared/models/order';
+import { OrderBase, OrderModel } from '@lance/shared/models/order';
 import { Request, Response } from 'express';
 
 export class OrdersController {
   static create = async (
     req: Request<object, object, CreateOrderPayload>,
-    res: Response<APIResponse<Order>>
+    res: Response<APIResponse<OrderBase>>
   ) => {
     const { title, description, client } = req.body;
 
@@ -33,7 +36,7 @@ export class OrdersController {
 
   static get = async (
     req: Request<PaginationPayload>,
-    res: Response<PaginatedAPIResponse<Order[]>>
+    res: Response<PaginatedAPIResponse<OrderBase[]>>
   ) => {
     const { page = 1, perPage = 10 } = req.query;
 
@@ -62,7 +65,7 @@ export class OrdersController {
 
   static getSingle = async (
     req: Request<SingleEntityGetPayload>,
-    res: Response<APIResponse<Order>>
+    res: Response<APIResponse<ExtendedOrder>>
   ) => {
     const { id } = req.query;
 
@@ -70,7 +73,22 @@ export class OrdersController {
       const order = await OrderModel.findById(id);
 
       if (order) {
-        return res.status(200).json({ data: order });
+        const client = await ClientModel.findById(order.client_id);
+
+        if (!client) {
+          return res
+            .status(500)
+            .json({ error: 'Order has no client bound to it' });
+        }
+
+        return res.status(200).json({
+          data: {
+            ...order.toObject(),
+            client_data: {
+              name: client.name,
+            },
+          },
+        });
       } else {
         return res.status(404).json({ error: 'Order not found' });
       }

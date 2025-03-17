@@ -1,5 +1,8 @@
-import { CreateOrderPayload } from '@lance/shared/models/api/orders';
-import { Order } from '@lance/shared/models/order';
+import {
+  CreateOrderPayload,
+  ExtendedOrder,
+} from '@lance/shared/models/api/orders';
+import { OrderBase } from '@lance/shared/models/order';
 import axiosInstance from '..';
 import APIEndpoints from '@lance/shared/constants/endpoints';
 import {
@@ -12,13 +15,13 @@ const { prefix, endpoints } = APIEndpoints.orders;
 
 export class OrdersAPI {
   static create = (data: CreateOrderPayload) =>
-    axiosInstance.post<SuccessfulAPIResponse<Order>>(
+    axiosInstance.post<SuccessfulAPIResponse<OrderBase>>(
       prefix + endpoints.create,
       data
     );
 
   static getPaginated = (data: PaginationPayload) =>
-    axiosInstance.get<SuccessfulAPIResponse<Order[]>>(
+    axiosInstance.get<SuccessfulAPIResponse<OrderBase[]>>(
       prefix + endpoints.getPaginated,
       {
         params: data,
@@ -26,7 +29,7 @@ export class OrdersAPI {
     );
 
   static getSingle = (data: SingleEntityGetPayload) =>
-    axiosInstance.get<SuccessfulAPIResponse<Order>>(
+    axiosInstance.get<SuccessfulAPIResponse<ExtendedOrder>>(
       prefix + endpoints.getSingle,
       {
         params: data,

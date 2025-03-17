@@ -1,14 +1,14 @@
 import { Document, Schema, Types, model } from 'mongoose';
 
-export type Order = {
+export type OrderBase = {
   _id: Types.ObjectId;
   title: string;
   description: string;
   is_completed: boolean;
-  client: Types.ObjectId;
+  client_id: Types.ObjectId;
 };
 
-type OrderDocument = Document & Order;
+type OrderDocument = Document & OrderBase;
 
 const orderSchema = new Schema<OrderDocument>({
   title: {
@@ -23,7 +23,7 @@ const orderSchema = new Schema<OrderDocument>({
     default: false,
     required: true,
   },
-  client: {
+  client_id: {
     type: Schema.Types.ObjectId,
     ref: 'clients',
     required: true,
