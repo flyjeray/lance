@@ -2,11 +2,12 @@ import { useNavigate } from 'react-router';
 import { Button } from '../components';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { AuthActions } from '../redux/slices/auth';
+import { ClientsTopList, OrdersTopList } from '../containers';
 
 export const DashboardPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { token, me } = useAppSelector((state) => state.authSlice);
+  const { me } = useAppSelector((state) => state.authSlice);
 
   const handleLogout = () => {
     dispatch(AuthActions.logout());
@@ -15,9 +16,9 @@ export const DashboardPage = () => {
 
   return (
     <div>
-      <h1>Dashboard</h1>
       <p>{me?.name}</p>
-      <p>{token}</p>
+      <OrdersTopList />
+      <ClientsTopList />
       <Button onClick={handleLogout} label="Logout" />
     </div>
   );

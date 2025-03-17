@@ -2,8 +2,8 @@ export type SuccessfulAPIResponse<T> = { data: T };
 type FailedAPIResponse = { error: unknown };
 
 export type PaginationPayload = {
-  page: number;
-  perPage: number;
+  page?: number;
+  perPage?: number;
 };
 
 export type PaginationResponse = {
