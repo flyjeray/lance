@@ -65,6 +65,12 @@ export const authSlice = createSlice({
     builder.addCase(fetchMe.fulfilled, (state, action) => {
       state.me = action.payload;
     });
+
+    builder.addCase(fetchMe.rejected, (state) => {
+      window.localStorage.removeItem(LOCALSTORAGE_TOKEN_PATH);
+      state.token = null;
+      state.me = null;
+    });
   },
 });
 
