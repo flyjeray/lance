@@ -10,10 +10,9 @@ type ButtonWidth = 'fit' | 'full';
 type Props = {
   variant?: ButtonVariant;
   width?: ButtonWidth;
-  onClick?: () => unknown;
   label?: string;
   type?: 'button' | 'reset' | 'submit';
-};
+} & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 /**
  * Customizable button with mixin-based style that accepts different variants and widths.
@@ -21,16 +20,11 @@ type Props = {
 export const Button = ({
   variant = 'primary',
   width = 'fit',
-  onClick = () => {},
   label = 'Click',
-  type = 'button',
+  ...props
 }: Props) => {
   return (
-    <button
-      type={type}
-      onClick={onClick}
-      className={styles[`btn-${variant}-${width}`]}
-    >
+    <button className={styles[`btn-${variant}-${width}`]} {...props}>
       {label}
     </button>
   );

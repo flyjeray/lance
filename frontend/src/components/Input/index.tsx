@@ -8,19 +8,21 @@ type Props = {
   width?: InputWidth;
   placeholder?: string;
   disabled?: boolean;
-};
+} & React.InputHTMLAttributes<HTMLInputElement>;
 
 export const Input = ({
   variant = 'default',
   width = 'fit',
   placeholder,
   disabled,
+  ...props
 }: Props) => {
   return (
     <input
       className={styles[`input-${variant}-${width}`]}
       placeholder={placeholder}
       disabled={disabled}
+      {...props}
     />
   );
 };

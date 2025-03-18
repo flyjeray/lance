@@ -11,16 +11,4 @@ type Story = StoryObj<typeof Button>;
 
 export const Component: Story = {
   args: {},
-  argTypes: {
-    onClick: {
-      table: {
-        disable: true,
-      },
-    },
-    type: {
-      table: {
-        disable: true,
-      },
-    },
-  },
 };

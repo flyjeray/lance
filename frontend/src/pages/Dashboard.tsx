@@ -2,7 +2,12 @@ import { useNavigate } from 'react-router';
 import { Button } from '../components';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { AuthActions } from '../redux/slices/auth';
-import { ClientsTopList, OrdersTopList } from '../containers';
+import {
+  ClientCreateForm,
+  ClientsTopList,
+  OrderCreateForm,
+  OrdersTopList,
+} from '../containers';
 
 export const DashboardPage = () => {
   const dispatch = useAppDispatch();
@@ -19,6 +24,8 @@ export const DashboardPage = () => {
       <p>{me?.name}</p>
       <OrdersTopList />
       <ClientsTopList />
+      <OrderCreateForm />
+      <ClientCreateForm />
       <Button onClick={handleLogout} label="Logout" />
     </div>
   );
