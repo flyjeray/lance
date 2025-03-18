@@ -1,3 +1,4 @@
+import { VerifiedUserLocals } from '@lance/shared/models/api/auth';
 import { CreateClientPayload } from '@lance/shared/models/api/clients';
 import {
   APIResponse,
@@ -11,12 +12,13 @@ import { Request, Response } from 'express';
 export class ClientsController {
   static create = async (
     req: Request<object, object, CreateClientPayload>,
-    res: Response<APIResponse<Client>>
+    res: Response<APIResponse<Client>, VerifiedUserLocals>
   ) => {
     const { name } = req.body;
+    const { user } = res.locals;
 
     try {
-      const client = new ClientModel({ name });
+      const client = new ClientModel({ name, user_owner_id: user });
       const saved = await client.save();
       return res.status(200).json({ data: saved });
     } catch (error) {
@@ -26,15 +28,16 @@ export class ClientsController {
 
   static getPaginated = async (
     req: Request<PaginationPayload>,
-    res: Response<PaginatedAPIResponse<Client[]>>
+    res: Response<PaginatedAPIResponse<Client[]>, VerifiedUserLocals>
   ) => {
     const { page = 1, perPage = 10 } = req.query;
+    const { user } = res.locals;
 
     try {
       const _page = Number(page);
       const _perPage = Number(perPage);
 
-      const clients = await ClientModel.find()
+      const clients = await ClientModel.find({ user_owner_id: user })
         .skip((_page - 1) * _perPage)
         .limit(_perPage);
       const totalClients = await ClientModel.countDocuments();
@@ -55,12 +58,16 @@ export class ClientsController {
 
   static getSingle = async (
     req: Request<SingleEntityGetPayload>,
-    res: Response<APIResponse<Client>>
+    res: Response<APIResponse<Client>, VerifiedUserLocals>
   ) => {
     const { id } = req.query;
+    const { user } = res.locals;
 
     try {
-      const client = await ClientModel.findById(id);
+      const client = await ClientModel.findOne({
+        user_owner_id: user,
+        _id: id,
+      });
 
       if (client) {
         return res.status(200).json({ data: client });

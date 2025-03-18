@@ -4,6 +4,7 @@ export type Client = {
   _id: Types.ObjectId;
   name: string;
   description: string;
+  user_owner_id: Types.ObjectId;
 };
 
 type ClientDocument = Document & Client;
@@ -15,6 +16,11 @@ const clientSchema = new Schema<ClientDocument>({
   },
   description: {
     type: String,
+  },
+  user_owner_id: {
+    type: Schema.Types.ObjectId,
+    ref: 'users',
+    required: true,
   },
 });
 

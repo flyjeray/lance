@@ -11,3 +11,7 @@ export type AuthSignInResponse = {
 export type AuthMeResponse = {
   name: string;
 };
+
+export type VerifiedUserLocals = {
+  user: string;
+};

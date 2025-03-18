@@ -6,6 +6,7 @@ export type OrderBase = {
   description: string;
   is_completed: boolean;
   client_id: Types.ObjectId;
+  user_owner_id: Types.ObjectId;
 };
 
 type OrderDocument = Document & OrderBase;
@@ -26,6 +27,11 @@ const orderSchema = new Schema<OrderDocument>({
   client_id: {
     type: Schema.Types.ObjectId,
     ref: 'clients',
+    required: true,
+  },
+  user_owner_id: {
+    type: Schema.Types.ObjectId,
+    ref: 'users',
     required: true,
   },
 });

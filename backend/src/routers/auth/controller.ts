@@ -2,11 +2,11 @@ import jwt from 'jsonwebtoken';
 import { UserModel } from '@lance/shared/models/user';
 import { Request, Response } from 'express';
 import { config } from '@/config';
-import { VerifiedUserRequest } from '@/middleware/auth';
 import {
   AuthCredentials,
   AuthMeResponse,
   AuthSignInResponse,
+  VerifiedUserLocals,
 } from '@lance/shared/models/api/auth';
 import { APIResponse } from '@lance/shared/models/api/general';
 
@@ -39,11 +39,10 @@ class AuthController {
 
   static me = async (
     req: Request,
-    res: Response<APIResponse<AuthMeResponse>>
+    res: Response<APIResponse<AuthMeResponse>, VerifiedUserLocals>
   ) => {
     try {
-      const { user: uid } = req as VerifiedUserRequest;
-
+      const { user: uid } = res.locals;
       const user = await UserModel.findById(uid);
 
       if (user) {

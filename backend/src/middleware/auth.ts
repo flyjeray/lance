@@ -3,15 +3,12 @@ import { UserModel } from '@lance/shared/models/user';
 import { Request, Response, NextFunction } from 'express';
 import { config } from '@/config';
 import { APIResponse } from '@lance/shared/models/api/general';
-
-export type VerifiedUserRequest = Request & {
-  user: string;
-};
+import { VerifiedUserLocals } from '@lance/shared/models/api/auth';
 
 class AuthMiddleware {
   static checkAuth = async (
     req: Request,
-    res: Response<APIResponse<unknown>>,
+    res: Response<APIResponse<unknown>, VerifiedUserLocals>,
     next: NextFunction
   ) => {
     try {
@@ -31,7 +28,7 @@ class AuthMiddleware {
 
       if (!user) return res.status(404).json({ error: 'User not found' });
 
-      (req as VerifiedUserRequest).user = user.id;
+      res.locals.user = user.id;
       next();
     } catch (error) {
       if (error instanceof jwt.TokenExpiredError) {

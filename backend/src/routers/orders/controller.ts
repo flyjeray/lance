@@ -1,3 +1,4 @@
+import { VerifiedUserLocals } from '@lance/shared/models/api/auth';
 import {
   APIResponse,
   PaginatedAPIResponse,
@@ -15,18 +16,27 @@ import { Request, Response } from 'express';
 export class OrdersController {
   static create = async (
     req: Request<object, object, CreateOrderPayload>,
-    res: Response<APIResponse<OrderBase>>
+    res: Response<APIResponse<OrderBase>, VerifiedUserLocals>
   ) => {
     const { title, description, client } = req.body;
+    const { user } = res.locals;
 
     try {
-      const foundClient = await ClientModel.findById(client);
+      const foundClient = await ClientModel.findOne({
+        user_owner_id: user,
+        _id: client,
+      });
 
       if (!foundClient) {
         return res.status(404).json({ error: `Client ${client} not found` });
       }
 
-      const order = new OrderModel({ title, description, client });
+      const order = new OrderModel({
+        title,
+        description,
+        client_id: client,
+        user_owner_id: user,
+      });
       const saved = await order.save();
       return res.status(200).json({ data: saved });
     } catch (error) {
@@ -36,15 +46,16 @@ export class OrdersController {
 
   static get = async (
     req: Request<PaginationPayload>,
-    res: Response<PaginatedAPIResponse<OrderBase[]>>
+    res: Response<PaginatedAPIResponse<OrderBase[]>, VerifiedUserLocals>
   ) => {
     const { page = 1, perPage = 10 } = req.query;
+    const { user } = res.locals;
 
     try {
       const _page = Number(page);
       const _perPage = Number(perPage);
 
-      const orders = await OrderModel.find()
+      const orders = await OrderModel.find({ user_owner_id: user })
         .skip((_page - 1) * _perPage)
         .limit(_perPage);
       const totalClients = await OrderModel.countDocuments();
@@ -65,12 +76,13 @@ export class OrdersController {
 
   static getSingle = async (
     req: Request<SingleEntityGetPayload>,
-    res: Response<APIResponse<ExtendedOrder>>
+    res: Response<APIResponse<ExtendedOrder>, VerifiedUserLocals>
   ) => {
     const { id } = req.query;
+    const { user } = res.locals;
 
     try {
-      const order = await OrderModel.findById(id);
+      const order = await OrderModel.findOne({ user_owner_id: user, _id: id });
 
       if (order) {
         const client = await ClientModel.findById(order.client_id);
