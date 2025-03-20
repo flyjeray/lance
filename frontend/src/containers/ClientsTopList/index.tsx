@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { List } from '../../components';
 import { ListItemEntry } from '../../components/List/Item';
 import { ClientsAPI } from '../../api/routers/clients';
+import { Link } from 'react-router';
 
 export const ClientsTopList = () => {
   const [data, setData] = useState<ListItemEntry[]>([]);
@@ -28,5 +29,16 @@ export const ClientsTopList = () => {
     fetchData();
   }, []);
 
-  return <List entries={data} />;
+  return (
+    <div>
+      <List entries={data} />
+      <Link
+        to={{
+          pathname: '/clients/1',
+        }}
+      >
+        <p>More</p>
+      </Link>
+    </div>
+  );
 };

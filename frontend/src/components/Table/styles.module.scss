@@ -1,0 +1,36 @@
+$borderRadius: 6px;
+
+.table_wrapper {
+  border: 1px solid black;
+  border-radius: $borderRadius;
+  overflow: hidden;
+
+  table {
+    border-collapse: collapse;
+    border-style: hidden;
+    width: 100%;
+
+    th {
+      border: 1px solid black;
+      padding: 12px;
+      border-top-left-radius: $borderRadius;
+      border-top-right-radius: $borderRadius;
+    }
+
+    tbody {
+      tr:last-child {
+        td:first-child {
+          border-bottom-left-radius: $borderRadius;
+        }
+        td:last-child {
+          border-bottom-right-radius: $borderRadius;
+        }
+      }
+    }
+
+    td {
+      border: 1px solid black;
+      padding: 12px;
+    }
+  }
+}

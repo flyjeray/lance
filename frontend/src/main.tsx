@@ -6,7 +6,14 @@ import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { AuthActions } from './redux/slices/auth';
-import { ClientPage, DashboardPage, HomePage, OrderPage } from './pages';
+import {
+  ClientPage,
+  ClientTablePage,
+  DashboardPage,
+  HomePage,
+  OrderPage,
+} from './pages';
+import { OrdersTablePage } from './pages/OrdersTable';
 
 const Protected = () => {
   const token =
@@ -48,6 +55,8 @@ const App = () => {
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/client/:id" element={<ClientPage />} />
               <Route path="/order/:id" element={<OrderPage />} />
+              <Route path="/clients/:page" element={<ClientTablePage />} />
+              <Route path="/orders/:page" element={<OrdersTablePage />} />
             </Route>
           </Routes>
         </BrowserRouter>
