@@ -1,5 +1,8 @@
 import { VerifiedUserLocals } from '@lance/shared/models/api/auth';
-import { CreateClientPayload } from '@lance/shared/models/api/clients';
+import {
+  ClientNameDictionary,
+  CreateClientPayload,
+} from '@lance/shared/models/api/clients';
 import {
   APIResponse,
   PaginatedAPIResponse,
@@ -74,6 +77,26 @@ export class ClientsController {
       } else {
         return res.status(404).json({ error: 'Client not found' });
       }
+    } catch (error) {
+      return res.status(400).json({ error });
+    }
+  };
+
+  static getNameDictionary = async (
+    _: Request,
+    res: Response<APIResponse<ClientNameDictionary>, VerifiedUserLocals>
+  ) => {
+    const { user } = res.locals;
+
+    try {
+      const clients = await ClientModel.find({ user_owner_id: user });
+
+      const names: Record<string, string> = {};
+      clients.forEach((c) => {
+        names[c._id.toString()] = c.name;
+      });
+
+      return res.status(200).json({ data: names });
     } catch (error) {
       return res.status(400).json({ error });
     }

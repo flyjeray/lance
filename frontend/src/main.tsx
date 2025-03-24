@@ -14,6 +14,7 @@ import {
   OrderPage,
 } from './pages';
 import { OrdersTablePage } from './pages/OrdersTable';
+import { ClientActions } from './redux/slices/clients';
 
 const Protected = () => {
   const token =
@@ -37,6 +38,7 @@ const AuthHandler = () => {
   useEffect(() => {
     if (token) {
       dispatch(AuthActions.fetchMe());
+      dispatch(ClientActions.fetchNames());
     }
   }, [token]);
 

@@ -5,7 +5,10 @@ import {
   SingleEntityGetPayload,
   SuccessfulAPIResponse,
 } from '@lance/shared/models/api/general';
-import { CreateClientPayload } from '@lance/shared/models/api/clients';
+import {
+  ClientNameDictionary,
+  CreateClientPayload,
+} from '@lance/shared/models/api/clients';
 import { Client } from '@lance/shared/models/client';
 
 const { prefix, endpoints } = APIEndpoints.clients;
@@ -31,5 +34,10 @@ export class ClientsAPI {
       {
         params: data,
       }
+    );
+
+  static getNameDictionary = () =>
+    axiosInstance.get<SuccessfulAPIResponse<ClientNameDictionary>>(
+      prefix + endpoints.nameDictionary
     );
 }
