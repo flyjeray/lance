@@ -2,7 +2,7 @@ import { Client } from '@lance/shared/models/client';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { ClientsAPI } from '../api/routers/clients';
-import { Columns, Table } from '../components/Table';
+import { Columns, Table } from '../components';
 
 const cols: Columns<Client> = {
   name: {

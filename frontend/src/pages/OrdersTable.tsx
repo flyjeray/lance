@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
-import { Columns, Table } from '../components/Table';
+import { Columns, Table } from '../components';
 import { OrdersAPI } from '../api/routers/orders';
 import { OrderBase } from '@lance/shared/models/order';
 import { useAppSelector } from '../redux/hooks';
