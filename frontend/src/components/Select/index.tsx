@@ -1,21 +1,23 @@
 import { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 
-type SelectListItem = {
+export type SelectItem = {
   label: string;
   key: string;
 };
 
 type Props = {
-  items: SelectListItem[];
+  items: SelectItem[];
   defaultValueKey?: string;
-  onChange: (key: SelectListItem) => void;
+  onChange: (key: SelectItem) => void;
+  label?: string;
   placeholder?: string;
 };
 
 export const Select = ({
   items,
   defaultValueKey,
+  label = '',
   placeholder = 'Select Value',
   onChange,
 }: Props) => {
@@ -32,13 +34,14 @@ export const Select = ({
     setIsOpen((prev) => !prev);
   };
 
-  const handleClickItem = (item: SelectListItem) => {
+  const handleClickItem = (item: SelectItem) => {
     onChange(item);
     setValue(item);
   };
 
   return (
     <div className={styles.select_container}>
+      {label && <p>{label}</p>}
       <button className={styles.select_button} onClick={handleClickButton}>
         {value?.label || placeholder}
       </button>

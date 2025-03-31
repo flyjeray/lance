@@ -1,4 +1,5 @@
 import {
+  ChangeOrdersClientPayload,
   CreateOrderPayload,
   ExtendedOrder,
 } from '@lance/shared/models/api/orders';
@@ -34,5 +35,11 @@ export class OrdersAPI {
       {
         params: data,
       }
+    );
+
+  static changeClient = (data: ChangeOrdersClientPayload) =>
+    axiosInstance.put<SuccessfulAPIResponse<string>>(
+      prefix + endpoints.changeClient,
+      data
     );
 }

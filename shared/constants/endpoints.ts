@@ -19,6 +19,7 @@ const APIEndpoints = {
       create: '/create',
       getPaginated: '/paginated',
       getSingle: '/single',
+      changeClient: '/change_client',
     },
   },
   clients: {

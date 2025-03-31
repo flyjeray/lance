@@ -11,3 +11,8 @@ export type ExtendedOrder = OrderBase & {
     name: string;
   };
 };
+
+export type ChangeOrdersClientPayload = {
+  orderID: string;
+  newClientID: string;
+};

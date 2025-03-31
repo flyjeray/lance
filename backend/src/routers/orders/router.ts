@@ -28,4 +28,10 @@ router.get(
   OrdersController.getSingle
 );
 
+router.put(
+  endpoints.changeClient,
+  AuthMiddleware.checkAuth,
+  OrdersController.changeClient
+);
+
 export { router as OrdersRouter };

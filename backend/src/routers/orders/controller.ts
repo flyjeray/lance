@@ -8,10 +8,12 @@ import {
 import {
   CreateOrderPayload,
   ExtendedOrder,
+  ChangeOrdersClientPayload,
 } from '@lance/shared/models/api/orders';
 import { ClientModel } from '@lance/shared/models/client';
 import { OrderBase, OrderModel } from '@lance/shared/models/order';
 import { Request, Response } from 'express';
+import { Types } from 'mongoose';
 
 export class OrdersController {
   static create = async (
@@ -104,6 +106,41 @@ export class OrdersController {
       } else {
         return res.status(404).json({ error: 'Order not found' });
       }
+    } catch (error) {
+      return res.status(400).json({ error });
+    }
+  };
+
+  static changeClient = async (
+    req: Request<object, object, ChangeOrdersClientPayload>,
+    res: Response<APIResponse<string>, VerifiedUserLocals>
+  ) => {
+    const { orderID, newClientID } = req.body;
+    const { user } = res.locals;
+
+    try {
+      const order = await OrderModel.findOne({
+        _id: orderID,
+        user_owner_id: user,
+      });
+
+      if (!order)
+        return res.status(404).json({ error: `Order ${orderID} not found` });
+
+      const client = await ClientModel.findOne({
+        _id: newClientID,
+        user_owner_id: user,
+      });
+
+      if (!client)
+        return res
+          .status(404)
+          .json({ error: `Client ${newClientID} not found` });
+
+      order.client_id = new Types.ObjectId(newClientID);
+      order.save();
+
+      return res.status(200).json({ data: 'success' });
     } catch (error) {
       return res.status(400).json({ error });
     }
