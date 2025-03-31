@@ -12,6 +12,7 @@ type Props = {
   onChange: (key: SelectItem) => void;
   label?: string;
   placeholder?: string;
+  shouldCloseOnSelect?: boolean;
 };
 
 export const Select = ({
@@ -20,6 +21,7 @@ export const Select = ({
   label = '',
   placeholder = 'Select Value',
   onChange,
+  shouldCloseOnSelect = true,
 }: Props) => {
   const find = (key?: string) => items.find((x) => x.key === key);
 
@@ -37,6 +39,9 @@ export const Select = ({
   const handleClickItem = (item: SelectItem) => {
     onChange(item);
     setValue(item);
+    if (shouldCloseOnSelect) {
+      setIsOpen(false);
+    }
   };
 
   return (
