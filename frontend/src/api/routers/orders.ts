@@ -1,7 +1,6 @@
 import {
   ChangeOrdersClientPayload,
   CreateOrderPayload,
-  ExtendedOrder,
 } from '@lance/shared/models/api/orders';
 import { OrderBase } from '@lance/shared/models/order';
 import axiosInstance from '..';
@@ -30,7 +29,7 @@ export class OrdersAPI {
     );
 
   static getSingle = (data: SingleEntityGetPayload) =>
-    axiosInstance.get<SuccessfulAPIResponse<ExtendedOrder>>(
+    axiosInstance.get<SuccessfulAPIResponse<OrderBase>>(
       prefix + endpoints.getSingle,
       {
         params: data,
@@ -38,7 +37,7 @@ export class OrdersAPI {
     );
 
   static changeClient = (data: ChangeOrdersClientPayload) =>
-    axiosInstance.put<SuccessfulAPIResponse<string>>(
+    axiosInstance.put<SuccessfulAPIResponse<OrderBase>>(
       prefix + endpoints.changeClient,
       data
     );

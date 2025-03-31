@@ -7,7 +7,6 @@ import {
 } from '@lance/shared/models/api/general';
 import {
   CreateOrderPayload,
-  ExtendedOrder,
   ChangeOrdersClientPayload,
 } from '@lance/shared/models/api/orders';
 import { ClientModel } from '@lance/shared/models/client';
@@ -78,7 +77,7 @@ export class OrdersController {
 
   static getSingle = async (
     req: Request<SingleEntityGetPayload>,
-    res: Response<APIResponse<ExtendedOrder>, VerifiedUserLocals>
+    res: Response<APIResponse<OrderBase>, VerifiedUserLocals>
   ) => {
     const { id } = req.query;
     const { user } = res.locals;
@@ -87,21 +86,8 @@ export class OrdersController {
       const order = await OrderModel.findOne({ user_owner_id: user, _id: id });
 
       if (order) {
-        const client = await ClientModel.findById(order.client_id);
-
-        if (!client) {
-          return res
-            .status(500)
-            .json({ error: 'Order has no client bound to it' });
-        }
-
         return res.status(200).json({
-          data: {
-            ...order.toObject(),
-            client_data: {
-              name: client.name,
-            },
-          },
+          data: order,
         });
       } else {
         return res.status(404).json({ error: 'Order not found' });
@@ -113,7 +99,7 @@ export class OrdersController {
 
   static changeClient = async (
     req: Request<object, object, ChangeOrdersClientPayload>,
-    res: Response<APIResponse<string>, VerifiedUserLocals>
+    res: Response<APIResponse<OrderBase>, VerifiedUserLocals>
   ) => {
     const { orderID, newClientID } = req.body;
     const { user } = res.locals;
@@ -138,9 +124,9 @@ export class OrdersController {
           .json({ error: `Client ${newClientID} not found` });
 
       order.client_id = new Types.ObjectId(newClientID);
-      order.save();
+      const saved = await order.save();
 
-      return res.status(200).json({ data: 'success' });
+      return res.status(200).json({ data: saved });
     } catch (error) {
       return res.status(400).json({ error });
     }

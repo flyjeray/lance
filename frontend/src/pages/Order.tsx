@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { OrdersAPI } from '../api/routers/orders';
-import { ExtendedOrder } from '@lance/shared/models/api/orders';
 import { Select, SelectItem } from '../components';
 import { useAppSelector } from '../redux/hooks';
+import { OrderBase } from '@lance/shared/models/order';
 
 export const OrderPage = () => {
   const params = useParams();
   const { names: clients } = useAppSelector((state) => state.clientSlice);
-  const [data, setData] = useState<ExtendedOrder | null>(null);
+  const [data, setData] = useState<OrderBase | null>(null);
 
   const clientSelectItems = useMemo((): SelectItem[] => {
     return Object.entries(clients).map(([id, name]) => ({
@@ -34,7 +34,9 @@ export const OrderPage = () => {
   const handleChangeClient = async (orderID: string, newClientID: string) => {
     try {
       if (orderID) {
-        OrdersAPI.changeClient({ orderID, newClientID });
+        OrdersAPI.changeClient({ orderID, newClientID }).then((response) => {
+          setData(response.data.data);
+        });
       }
     } catch (error) {
       console.error(error);
@@ -57,7 +59,7 @@ export const OrderPage = () => {
           pathname: `/client/${data.client_id}`,
         }}
       >
-        <p>{data.client_data.name}</p>
+        <p>{clients[data.client_id.toString()]}</p>
       </Link>
       <Select
         label="Change client"
