@@ -29,6 +29,7 @@ const APIEndpoints = {
       getPaginated: '/paginated',
       getSingle: '/single',
       nameDictionary: '/dictionary',
+      getClientOrders: '/orders',
     },
   },
 } as const satisfies APIStructure;

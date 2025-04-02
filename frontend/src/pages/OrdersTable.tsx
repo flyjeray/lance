@@ -41,10 +41,10 @@ export const OrdersTablePage = () => {
     },
   };
 
-  const fetchData = async (page: number) => {
+  const fetchData = async (page: string) => {
     try {
       if (page) {
-        const response = await OrdersAPI.getPaginated({ page, perPage: 5 });
+        const response = await OrdersAPI.getPaginated({ page, perPage: '5' });
 
         if (response.data.data) {
           setData(response.data.data);
@@ -56,9 +56,8 @@ export const OrdersTablePage = () => {
   };
 
   useEffect(() => {
-    const asNumber = Number(params.page);
-    if (asNumber) {
-      fetchData(asNumber);
+    if (params.page) {
+      fetchData(params.page);
     }
   }, [params]);
 

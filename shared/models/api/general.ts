@@ -1,9 +1,12 @@
 export type SuccessfulAPIResponse<T> = { data: T };
+export type SuccessfulPaginatedAPIResponse<T> = SuccessfulAPIResponse<T> & {
+  pagination: PaginationResponse;
+};
 type FailedAPIResponse = { error: unknown };
 
 export type PaginationPayload = {
-  page?: number;
-  perPage?: number;
+  page?: string;
+  perPage?: string;
 };
 
 export type PaginationResponse = {
@@ -20,5 +23,5 @@ export type SingleEntityGetPayload = {
 export type APIResponse<T> = SuccessfulAPIResponse<T> | FailedAPIResponse;
 
 export type PaginatedAPIResponse<T> =
-  | (SuccessfulAPIResponse<T> & { pagination: PaginationResponse })
+  | SuccessfulPaginatedAPIResponse<T>
   | FailedAPIResponse;

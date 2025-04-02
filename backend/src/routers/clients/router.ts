@@ -34,4 +34,10 @@ router.get(
   ClientsController.getNameDictionary
 );
 
+router.get(
+  endpoints.getClientOrders,
+  AuthMiddleware.checkAuth,
+  ClientsController.getOrders
+);
+
 export { router as ClientsRouter };

@@ -10,6 +10,7 @@ import {
   SingleEntityGetPayload,
 } from '@lance/shared/models/api/general';
 import { Client, ClientModel } from '@lance/shared/models/client';
+import { OrderBase, OrderModel } from '@lance/shared/models/order';
 import { Request, Response } from 'express';
 
 export class ClientsController {
@@ -97,6 +98,39 @@ export class ClientsController {
       });
 
       return res.status(200).json({ data: names });
+    } catch (error) {
+      return res.status(400).json({ error });
+    }
+  };
+
+  static getOrders = async (
+    req: Request<SingleEntityGetPayload & PaginationPayload>,
+    res: Response<PaginatedAPIResponse<OrderBase[]>, VerifiedUserLocals>
+  ) => {
+    const { id, page, perPage } = req.query;
+    const { user } = res.locals;
+
+    try {
+      const _page = Number(page);
+      const _perPage = Number(perPage);
+
+      const orders = await OrderModel.find({
+        user_owner_id: user,
+        client_id: id,
+      })
+        .skip((_page - 1) * _perPage)
+        .limit(_perPage);
+      const totalOrders = await OrderModel.countDocuments();
+
+      return res.status(200).json({
+        data: orders,
+        pagination: {
+          total: totalOrders,
+          page: _page,
+          perPage: _perPage,
+          totalPages: Math.ceil(totalOrders / _perPage),
+        },
+      });
     } catch (error) {
       return res.status(400).json({ error });
     }

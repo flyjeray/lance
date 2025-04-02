@@ -4,12 +4,14 @@ import {
   PaginationPayload,
   SingleEntityGetPayload,
   SuccessfulAPIResponse,
+  SuccessfulPaginatedAPIResponse,
 } from '@lance/shared/models/api/general';
 import {
   ClientNameDictionary,
   CreateClientPayload,
 } from '@lance/shared/models/api/clients';
 import { Client } from '@lance/shared/models/client';
+import { OrderBase } from '@lance/shared/models/order';
 
 const { prefix, endpoints } = APIEndpoints.clients;
 
@@ -21,7 +23,7 @@ export class ClientsAPI {
     );
 
   static getPaginated = (data: PaginationPayload) =>
-    axiosInstance.get<SuccessfulAPIResponse<Client[]>>(
+    axiosInstance.get<SuccessfulPaginatedAPIResponse<Client[]>>(
       prefix + endpoints.getPaginated,
       {
         params: data,
@@ -39,5 +41,11 @@ export class ClientsAPI {
   static getNameDictionary = () =>
     axiosInstance.get<SuccessfulAPIResponse<ClientNameDictionary>>(
       prefix + endpoints.nameDictionary
+    );
+
+  static getOrders = (data: SingleEntityGetPayload & PaginationPayload) =>
+    axiosInstance.get<SuccessfulPaginatedAPIResponse<OrderBase[]>>(
+      prefix + endpoints.getClientOrders,
+      { params: data }
     );
 }

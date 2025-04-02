@@ -9,7 +9,10 @@ export const OrdersTopList = () => {
 
   const fetchData = async () => {
     try {
-      const response = await OrdersAPI.getPaginated({ page: 1, perPage: 5 });
+      const response = await OrdersAPI.getPaginated({
+        page: '1',
+        perPage: '5',
+      });
       const orders = response.data.data;
 
       if (orders) {

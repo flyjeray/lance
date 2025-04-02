@@ -27,10 +27,10 @@ export const ClientTablePage = () => {
   const params = useParams();
   const [data, setData] = useState<Client[]>([]);
 
-  const fetchData = async (page: number) => {
+  const fetchData = async (page: string) => {
     try {
       if (page) {
-        const response = await ClientsAPI.getPaginated({ page, perPage: 5 });
+        const response = await ClientsAPI.getPaginated({ page, perPage: '5' });
 
         if (response.data.data) {
           setData(response.data.data);
@@ -42,9 +42,8 @@ export const ClientTablePage = () => {
   };
 
   useEffect(() => {
-    const asNumber = Number(params.page);
-    if (asNumber) {
-      fetchData(asNumber);
+    if (params.page) {
+      fetchData(params.page);
     }
   }, [params]);
 
