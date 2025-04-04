@@ -15,13 +15,20 @@ import {
 } from './pages';
 import { OrdersTablePage } from './pages/OrdersTable';
 import { ClientActions } from './redux/slices/clients';
+import { Layout } from './components/Layout';
 
 const Protected = () => {
   const token =
     useAppSelector((state) => state.authSlice.token) ||
     localStorage.getItem(LOCALSTORAGE_TOKEN_PATH);
 
-  return token ? <Outlet /> : <Navigate to="/" />;
+  return token ? (
+    <Layout>
+      <Outlet />
+    </Layout>
+  ) : (
+    <Navigate to="/" />
+  );
 };
 
 const AuthHandler = () => {
