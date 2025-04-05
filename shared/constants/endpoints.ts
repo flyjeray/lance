@@ -10,6 +10,7 @@ const APIEndpoints = {
     prefix: '/auth',
     endpoints: {
       login: '/login',
+      logout: '/logout',
       me: '/me',
     },
   },

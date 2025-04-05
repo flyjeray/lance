@@ -1,7 +1,6 @@
 import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router';
-import { LOCALSTORAGE_TOKEN_PATH } from './api';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
@@ -18,11 +17,9 @@ import { ClientActions } from './redux/slices/clients';
 import { Layout } from './components/Layout';
 
 const Protected = () => {
-  const token =
-    useAppSelector((state) => state.authSlice.token) ||
-    localStorage.getItem(LOCALSTORAGE_TOKEN_PATH);
+  const { me } = useAppSelector((state) => state.authSlice);
 
-  return token ? (
+  return me ? (
     <Layout>
       <Outlet />
     </Layout>
@@ -33,21 +30,17 @@ const Protected = () => {
 
 const AuthHandler = () => {
   const dispatch = useAppDispatch();
-  const { token } = useAppSelector((state) => state.authSlice);
+  const { me } = useAppSelector((state) => state.authSlice);
 
   useEffect(() => {
-    const storageToken = window.localStorage.getItem(LOCALSTORAGE_TOKEN_PATH);
-    if (storageToken) {
-      dispatch(AuthActions.setToken(storageToken));
-    }
+    dispatch(AuthActions.fetchMe());
   }, []);
 
   useEffect(() => {
-    if (token) {
-      dispatch(AuthActions.fetchMe());
+    if (me) {
       dispatch(ClientActions.fetchNames());
     }
-  }, [token]);
+  }, [me]);
 
   return null;
 };

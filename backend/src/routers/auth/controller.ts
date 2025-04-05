@@ -5,7 +5,6 @@ import { config } from '@/config';
 import {
   AuthCredentials,
   AuthMeResponse,
-  AuthSignInResponse,
   VerifiedUserLocals,
 } from '@lance/shared/models/api/auth';
 import { APIResponse } from '@lance/shared/models/api/general';
@@ -13,7 +12,7 @@ import { APIResponse } from '@lance/shared/models/api/general';
 class AuthController {
   static login = async (
     req: Request<object, object, AuthCredentials>,
-    res: Response<APIResponse<AuthSignInResponse>>
+    res: Response<APIResponse<string>>
   ) => {
     const { login, password } = req.body;
 
@@ -31,7 +30,13 @@ class AuthController {
       const token = jwt.sign({ userId: user._id }, config.authKey, {
         expiresIn: '1 hour',
       });
-      return res.json({ data: { token, uid: user.id } });
+
+      res.cookie('token', token, {
+        httpOnly: true,
+        sameSite: 'lax',
+        maxAge: 1000 * 60 * 60 * 24,
+      });
+      return res.json({ data: 'success' });
     } catch (error) {
       return res.status(400).json({ error });
     }
@@ -53,6 +58,15 @@ class AuthController {
     } catch (error) {
       return res.status(400).json({ error });
     }
+  };
+
+  static logout = async (req: Request, res: Response<APIResponse<string>>) => {
+    res.clearCookie('token', {
+      httpOnly: true,
+      sameSite: 'lax',
+    });
+
+    return res.status(200).json({ data: 'success' });
   };
 }
 

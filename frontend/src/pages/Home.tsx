@@ -1,17 +1,17 @@
 import { useNavigate } from 'react-router';
-import { useAppSelector } from '../redux/hooks';
 import { useEffect } from 'react';
 import { LoginForm } from '../containers';
+import { useAppSelector } from '../redux/hooks';
 
 export const HomePage = () => {
   const navigate = useNavigate();
-  const { token } = useAppSelector((state) => state.authSlice);
+  const { me } = useAppSelector((state) => state.authSlice);
 
   useEffect(() => {
-    if (token) {
+    if (me) {
       navigate('/dashboard');
     }
-  }, [token]);
+  }, [me]);
 
   return (
     <div>

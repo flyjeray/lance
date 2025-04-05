@@ -15,6 +15,8 @@ router.post(
   AuthController.login
 );
 
+router.post(endpoints.logout, AuthMiddleware.checkAuth, AuthController.logout);
+
 router.get(endpoints.me, AuthMiddleware.checkAuth, AuthController.me);
 
 export { router as AuthRouter };
