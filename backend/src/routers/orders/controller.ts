@@ -19,7 +19,7 @@ export class OrdersController {
     req: Request<object, object, CreateOrderPayload>,
     res: Response<APIResponse<OrderBase>, VerifiedUserLocals>
   ) => {
-    const { title, description, client } = req.body;
+    const { title, description, client, price } = req.body;
     const { user } = res.locals;
 
     try {
@@ -37,6 +37,7 @@ export class OrdersController {
         description,
         client_id: client,
         user_owner_id: user,
+        price,
       });
       const saved = await order.save();
       return res.status(200).json({ data: saved });

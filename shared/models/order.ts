@@ -5,6 +5,7 @@ export type OrderBase = {
   title: string;
   description: string;
   is_completed: boolean;
+  price: number;
   client_id: Types.ObjectId;
   user_owner_id: Types.ObjectId;
 };
@@ -22,6 +23,10 @@ const orderSchema = new Schema<OrderDocument>({
   is_completed: {
     type: Boolean,
     default: false,
+    required: true,
+  },
+  price: {
+    type: Number,
     required: true,
   },
   client_id: {

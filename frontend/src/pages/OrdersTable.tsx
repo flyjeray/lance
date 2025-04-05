@@ -27,6 +27,10 @@ export const OrdersTablePage = () => {
       label: "Order's Description",
       render: (order) => <p>{order.description}</p>,
     },
+    price: {
+      label: 'Price',
+      render: (order) => <p>${order.price}</p>,
+    },
     is_completed: {
       label: 'Completed?',
       render: (order) => <p>{order.is_completed ? '+' : '-'}</p>,
