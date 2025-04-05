@@ -1,13 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { LOCALSTORAGE_TOKEN_PATH } from '../../api';
 import { AuthCredentials, AuthMeResponse } from '@lance/shared/models/api/auth';
 import { AuthAPI } from '../../api/routers/auth';
 
 type SliceState = {
+  isLoaded: boolean;
   me: AuthMeResponse | null;
 };
 
 const initialState: SliceState = {
+  isLoaded: false,
   me: null,
 };
 
@@ -45,11 +46,12 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchMe.fulfilled, (state, action) => {
+      state.isLoaded = true;
       state.me = action.payload;
     });
 
     builder.addCase(fetchMe.rejected, (state) => {
-      window.localStorage.removeItem(LOCALSTORAGE_TOKEN_PATH);
+      state.isLoaded = true;
       state.me = null;
     });
   },

@@ -17,15 +17,17 @@ import { ClientActions } from './redux/slices/clients';
 import { Layout } from './components/Layout';
 
 const Protected = () => {
-  const { me } = useAppSelector((state) => state.authSlice);
+  const { me, isLoaded } = useAppSelector((state) => state.authSlice);
 
-  return me ? (
-    <Layout>
-      <Outlet />
-    </Layout>
-  ) : (
-    <Navigate to="/" />
-  );
+  if (!me && isLoaded) {
+    return <Navigate to="/" />;
+  } else {
+    return (
+      <Layout>
+        <Outlet />
+      </Layout>
+    );
+  }
 };
 
 const AuthHandler = () => {
