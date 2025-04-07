@@ -14,7 +14,7 @@ import {
 } from './pages';
 import { OrdersTablePage } from './pages/OrdersTable';
 import { ClientActions } from './redux/slices/clients';
-import { Layout } from './components/Layout';
+import { Layout } from './components';
 
 const Protected = () => {
   const { me, isLoaded } = useAppSelector((state) => state.authSlice);
