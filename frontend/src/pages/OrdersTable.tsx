@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router';
-import { Columns, Table } from '../components';
+import { Link, useNavigate, useParams } from 'react-router';
+import { Columns, Pagination, Table } from '../components';
 import { OrdersAPI } from '../api/routers/orders';
 import { OrderBase } from '@lance/shared/models/order';
 import { useAppSelector } from '../redux/hooks';
+import { PaginationResponse } from '@lance/shared/models/api/general';
 
 export const OrdersTablePage = () => {
   const params = useParams();
+  const navigate = useNavigate();
   const [data, setData] = useState<OrderBase[]>([]);
+  const [pagination, setPagination] = useState<PaginationResponse | null>(null);
   const { names } = useAppSelector((state) => state.clientSlice);
 
   const cols: Columns<OrderBase> = {
@@ -52,6 +55,7 @@ export const OrdersTablePage = () => {
 
         if (response.data.data) {
           setData(response.data.data);
+          setPagination(response.data.pagination);
         }
       }
     } catch (error) {
@@ -67,5 +71,20 @@ export const OrdersTablePage = () => {
 
   if (!data) return <p>No data</p>;
 
-  return <Table data={data} columns={cols} />;
+  return (
+    <>
+      <Table data={data} columns={cols} />
+
+      {pagination && (
+        <Pagination
+          page={pagination.page}
+          lastPage={pagination.totalPages}
+          delta={2}
+          onPageChange={(page) => {
+            navigate(`/clients/${page}`);
+          }}
+        />
+      )}
+    </>
+  );
 };

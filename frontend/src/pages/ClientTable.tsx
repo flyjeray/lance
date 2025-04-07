@@ -1,8 +1,9 @@
 import { Client } from '@lance/shared/models/client';
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import { ClientsAPI } from '../api/routers/clients';
-import { Columns, Table } from '../components';
+import { Columns, Pagination, Table } from '../components';
+import { PaginationResponse } from '@lance/shared/models/api/general';
 
 const cols: Columns<Client> = {
   name: {
@@ -25,7 +26,9 @@ const cols: Columns<Client> = {
 
 export const ClientTablePage = () => {
   const params = useParams();
+  const navigate = useNavigate();
   const [data, setData] = useState<Client[]>([]);
+  const [pagination, setPagination] = useState<PaginationResponse | null>(null);
 
   const fetchData = async (page: string) => {
     try {
@@ -34,6 +37,7 @@ export const ClientTablePage = () => {
 
         if (response.data.data) {
           setData(response.data.data);
+          setPagination(response.data.pagination);
         }
       }
     } catch (error) {
@@ -49,5 +53,20 @@ export const ClientTablePage = () => {
 
   if (!data) return <p>No data</p>;
 
-  return <Table data={data} columns={cols} />;
+  return (
+    <>
+      <Table data={data} columns={cols} />
+
+      {pagination && (
+        <Pagination
+          page={pagination.page}
+          lastPage={pagination.totalPages}
+          delta={2}
+          onPageChange={(page) => {
+            navigate(`/clients/${page}`);
+          }}
+        />
+      )}
+    </>
+  );
 };
