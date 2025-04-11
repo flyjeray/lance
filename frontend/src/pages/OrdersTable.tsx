@@ -1,17 +1,13 @@
-import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { Columns, Pagination, Table } from '../components';
-import { OrdersAPI } from '../api/routers/orders';
 import { OrderBase } from '@lance/shared/models/order';
-import { useAppSelector } from '../redux/hooks';
-import { PaginationResponse } from '@lance/shared/models/api/general';
+import { useClientNameDictionary, useOrderList } from '../hooks/query';
 
 export const OrdersTablePage = () => {
-  const params = useParams();
+  const { page } = useParams();
   const navigate = useNavigate();
-  const [data, setData] = useState<OrderBase[]>([]);
-  const [pagination, setPagination] = useState<PaginationResponse | null>(null);
-  const { names } = useAppSelector((state) => state.clientSlice);
+  const { data: clients } = useClientNameDictionary();
+  const { data: orders } = useOrderList({ page, perPage: '5' });
 
   const cols: Columns<OrderBase> = {
     title: {
@@ -42,43 +38,22 @@ export const OrdersTablePage = () => {
       label: 'Client',
       render: (order) => (
         <Link to={{ pathname: `/client/${order.client_id}` }}>
-          {names[order.client_id.toString()]}
+          {clients?.data[order.client_id.toString()]}
         </Link>
       ),
     },
   };
 
-  const fetchData = async (page: string) => {
-    try {
-      if (page) {
-        const response = await OrdersAPI.getPaginated({ page, perPage: '5' });
-
-        if (response.data.data) {
-          setData(response.data.data);
-          setPagination(response.data.pagination);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    if (params.page) {
-      fetchData(params.page);
-    }
-  }, [params]);
-
-  if (!data) return <p>No data</p>;
+  if (!orders) return <p>No data</p>;
 
   return (
     <>
-      <Table data={data} columns={cols} />
+      <Table data={orders.data} columns={cols} />
 
-      {pagination && (
+      {orders.pagination && (
         <Pagination
-          page={pagination.page}
-          lastPage={pagination.totalPages}
+          page={orders.pagination.page}
+          lastPage={orders.pagination.totalPages}
           delta={2}
           onPageChange={(page) => {
             navigate(`/clients/${page}`);

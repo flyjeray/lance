@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router';
 import { useEffect } from 'react';
 import { LoginForm } from '../containers';
-import { useAppSelector } from '../redux/hooks';
+import { useMe } from '../hooks/query';
 
 export const HomePage = () => {
   const navigate = useNavigate();
-  const { me } = useAppSelector((state) => state.authSlice);
+  const { data: me } = useMe();
 
   useEffect(() => {
     if (me) {

@@ -1,10 +1,8 @@
 import { Button, Input } from '../../components';
-import { useAppDispatch } from '../../redux/hooks';
-import { AuthActions } from '../../redux/slices/auth';
-import { AuthAPI } from '../../api/routers/auth';
+import { useLogin } from '../../hooks/query';
 
 export const LoginForm = () => {
-  const dispatch = useAppDispatch();
+  const { mutateAsync: auth } = useLogin();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -13,11 +11,7 @@ export const LoginForm = () => {
     const login = formData.get('login') as string;
     const password = formData.get('password') as string;
 
-    const loginResult = await AuthAPI.login({ login, password });
-
-    if (loginResult.data.data === 'success') {
-      dispatch(AuthActions.fetchMe());
-    }
+    auth({ login, password });
   };
 
   return (

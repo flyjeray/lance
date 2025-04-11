@@ -1,10 +1,6 @@
-import { StrictMode, useEffect } from 'react';
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router';
-import { Provider } from 'react-redux';
-import { store } from './redux/store';
-import { useAppDispatch, useAppSelector } from './redux/hooks';
-import { AuthActions } from './redux/slices/auth';
 import {
   ClientPage,
   ClientTablePage,
@@ -13,13 +9,14 @@ import {
   OrderPage,
 } from './pages';
 import { OrdersTablePage } from './pages/OrdersTable';
-import { ClientActions } from './redux/slices/clients';
 import { Layout } from './components';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useMe } from './hooks/query';
 
 const Protected = () => {
-  const { me, isLoaded } = useAppSelector((state) => state.authSlice);
+  const { isError } = useMe();
 
-  if (!me && isLoaded) {
+  if (isError) {
     return <Navigate to="/" />;
   } else {
     return (
@@ -30,28 +27,21 @@ const Protected = () => {
   }
 };
 
-const AuthHandler = () => {
-  const dispatch = useAppDispatch();
-  const { me } = useAppSelector((state) => state.authSlice);
-
-  useEffect(() => {
-    dispatch(AuthActions.fetchMe());
-  }, []);
-
-  useEffect(() => {
-    if (me) {
-      dispatch(ClientActions.fetchNames());
-    }
-  }, [me]);
-
-  return null;
-};
-
 const App = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        staleTime: Infinity,
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+      },
+    },
+  });
+
   return (
     <StrictMode>
-      <Provider store={store}>
-        <AuthHandler />
+      <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -64,7 +54,7 @@ const App = () => {
             </Route>
           </Routes>
         </BrowserRouter>
-      </Provider>
+      </QueryClientProvider>
     </StrictMode>
   );
 };

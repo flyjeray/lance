@@ -1,14 +1,16 @@
-import { ClientsAPI } from '../../api/routers/clients';
 import { Button, Input } from '../../components';
+import { useCreateClient } from '../../hooks/query';
 
 export const ClientCreateForm = () => {
+  const { mutateAsync: createClient } = useCreateClient();
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
     const name = formData.get('name') as string;
 
-    ClientsAPI.create({ name });
+    createClient({ name });
   };
 
   return (

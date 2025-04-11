@@ -9,36 +9,38 @@ import {
   PaginationPayload,
   SingleEntityGetPayload,
   SuccessfulAPIResponse,
+  SuccessfulPaginatedAPIResponse,
 } from '@lance/shared/models/api/general';
 
 const { prefix, endpoints } = APIEndpoints.orders;
 
 export class OrdersAPI {
   static create = (data: CreateOrderPayload) =>
-    axiosInstance.post<SuccessfulAPIResponse<OrderBase>>(
-      prefix + endpoints.create,
-      data
-    );
+    axiosInstance
+      .post<SuccessfulAPIResponse<OrderBase>>(prefix + endpoints.create, data)
+      .then((res) => res.data);
 
   static getPaginated = (data: PaginationPayload) =>
-    axiosInstance.get<SuccessfulAPIResponse<OrderBase[]>>(
-      prefix + endpoints.getPaginated,
-      {
-        params: data,
-      }
-    );
+    axiosInstance
+      .get<SuccessfulPaginatedAPIResponse<OrderBase[]>>(
+        prefix + endpoints.getPaginated,
+        {
+          params: data,
+        }
+      )
+      .then((res) => res.data);
 
   static getSingle = (data: SingleEntityGetPayload) =>
-    axiosInstance.get<SuccessfulAPIResponse<OrderBase>>(
-      prefix + endpoints.getSingle,
-      {
+    axiosInstance
+      .get<SuccessfulAPIResponse<OrderBase>>(prefix + endpoints.getSingle, {
         params: data,
-      }
-    );
+      })
+      .then((res) => res.data);
 
   static changeClient = (data: ChangeOrdersClientPayload) =>
-    axiosInstance.put<SuccessfulAPIResponse<OrderBase>>(
-      prefix + endpoints.changeClient,
-      data
-    );
+    axiosInstance
+      .put<
+        SuccessfulAPIResponse<OrderBase>
+      >(prefix + endpoints.changeClient, data)
+      .then((res) => res.data);
 }

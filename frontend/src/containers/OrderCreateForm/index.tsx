@@ -1,7 +1,9 @@
-import { OrdersAPI } from '../../api/routers/orders';
 import { Button, Input } from '../../components';
+import { useCreateOrder } from '../../hooks/query';
 
 export const OrderCreateForm = () => {
+  const { mutateAsync: createOrder } = useCreateOrder();
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -12,7 +14,7 @@ export const OrderCreateForm = () => {
 
     const priceAsNumber = Number(price);
 
-    OrdersAPI.create({
+    createOrder({
       title,
       client,
       price: priceAsNumber,

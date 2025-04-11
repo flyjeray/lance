@@ -1,72 +1,48 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Link, useParams } from 'react-router';
-import { OrdersAPI } from '../api/routers/orders';
 import { Select, SelectItem } from '../components';
-import { useAppSelector } from '../redux/hooks';
-import { OrderBase } from '@lance/shared/models/order';
+import {
+  useChangeOrderClient,
+  useClientNameDictionary,
+  useOrder,
+} from '../hooks/query';
 
 export const OrderPage = () => {
-  const params = useParams();
-  const { names: clients } = useAppSelector((state) => state.clientSlice);
-  const [data, setData] = useState<OrderBase | null>(null);
+  const { id } = useParams();
+  const { data: clients } = useClientNameDictionary();
+  const { data: order } = useOrder({ id: id as string });
+  const { mutateAsync: changeClient } = useChangeOrderClient(id as string);
 
   const clientSelectItems = useMemo((): SelectItem[] => {
-    return Object.entries(clients).map(([id, name]) => ({
+    if (!clients) return [];
+
+    return Object.entries(clients.data).map(([id, name]) => ({
       label: name,
       key: id,
     }));
   }, [clients]);
 
-  const fetchData = async (id: string) => {
-    try {
-      if (id) {
-        const response = await OrdersAPI.getSingle({ id });
-
-        if (response.data.data) {
-          setData(response.data.data);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleChangeClient = async (orderID: string, newClientID: string) => {
-    try {
-      if (orderID) {
-        OrdersAPI.changeClient({ orderID, newClientID }).then((response) => {
-          setData(response.data.data);
-        });
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    if (params.id) {
-      fetchData(params.id);
-    }
-  }, [params]);
-
-  if (!data) return <p>No data</p>;
+  if (!order) return <p>No data</p>;
 
   return (
     <div>
-      <p>{data.title}</p>
+      <p>{order.data.title}</p>
       <Link
         to={{
-          pathname: `/client/${data.client_id}`,
+          pathname: `/client/${order.data.client_id}`,
         }}
       >
-        <p>{clients[data.client_id.toString()]}</p>
+        <p>{clients?.data[order.data.client_id.toString()]}</p>
       </Link>
       <Select
         label="Change client"
-        defaultValueKey={data.client_id.toString()}
+        defaultValueKey={order.data.client_id.toString()}
         items={clientSelectItems}
         onChange={(client) =>
-          handleChangeClient(data._id.toString(), client.key)
+          changeClient({
+            orderID: order.data._id.toString(),
+            newClientID: client.key,
+          })
         }
       />
     </div>

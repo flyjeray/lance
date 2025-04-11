@@ -15,7 +15,7 @@ export class AuthAPI {
   static logout = () => axiosInstance.post(prefix + endpoints.logout);
 
   static me = () =>
-    axiosInstance.get<SuccessfulAPIResponse<AuthMeResponse>>(
-      prefix + endpoints.me
-    );
+    axiosInstance
+      .get<SuccessfulAPIResponse<AuthMeResponse>>(prefix + endpoints.me)
+      .then((res) => res.data);
 }

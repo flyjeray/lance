@@ -17,35 +17,38 @@ const { prefix, endpoints } = APIEndpoints.clients;
 
 export class ClientsAPI {
   static create = (data: CreateClientPayload) =>
-    axiosInstance.post<SuccessfulAPIResponse<Client>>(
-      prefix + endpoints.create,
-      data
-    );
+    axiosInstance
+      .post<SuccessfulAPIResponse<Client>>(prefix + endpoints.create, data)
+      .then((res) => res.data);
 
   static getPaginated = (data: PaginationPayload) =>
-    axiosInstance.get<SuccessfulPaginatedAPIResponse<Client[]>>(
-      prefix + endpoints.getPaginated,
-      {
-        params: data,
-      }
-    );
+    axiosInstance
+      .get<SuccessfulPaginatedAPIResponse<Client[]>>(
+        prefix + endpoints.getPaginated,
+        {
+          params: data,
+        }
+      )
+      .then((res) => res.data);
 
   static getSingle = (data: SingleEntityGetPayload) =>
-    axiosInstance.get<SuccessfulAPIResponse<Client>>(
-      prefix + endpoints.getSingle,
-      {
+    axiosInstance
+      .get<SuccessfulAPIResponse<Client>>(prefix + endpoints.getSingle, {
         params: data,
-      }
-    );
+      })
+      .then((res) => res.data);
 
   static getNameDictionary = () =>
-    axiosInstance.get<SuccessfulAPIResponse<ClientNameDictionary>>(
-      prefix + endpoints.nameDictionary
-    );
+    axiosInstance
+      .get<
+        SuccessfulAPIResponse<ClientNameDictionary>
+      >(prefix + endpoints.nameDictionary)
+      .then((res) => res.data);
 
   static getOrders = (data: SingleEntityGetPayload & PaginationPayload) =>
-    axiosInstance.get<SuccessfulPaginatedAPIResponse<OrderBase[]>>(
-      prefix + endpoints.getClientOrders,
-      { params: data }
-    );
+    axiosInstance
+      .get<
+        SuccessfulPaginatedAPIResponse<OrderBase[]>
+      >(prefix + endpoints.getClientOrders, { params: data })
+      .then((res) => res.data);
 }
