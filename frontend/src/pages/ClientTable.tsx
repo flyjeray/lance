@@ -2,7 +2,6 @@ import { Link, useNavigate, useParams } from 'react-router';
 import { useClientList } from '../hooks/query';
 import {
   Box,
-  Container,
   Pagination,
   Paper,
   Table,

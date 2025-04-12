@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router';
 import { useEffect } from 'react';
 import { LoginForm } from '../containers';
 import { useMe } from '../hooks/query';
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 export const HomePage = () => {
   const navigate = useNavigate();

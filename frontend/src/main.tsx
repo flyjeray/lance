@@ -12,7 +12,7 @@ import { OrdersTablePage } from './pages/OrdersTable';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useMe } from './hooks/query';
 import { ProtectedLayout } from './containers';
-import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material';
 
 const theme = createTheme({
   components: {
