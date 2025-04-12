@@ -1,11 +1,18 @@
-import { useMemo } from 'react';
 import { Link, useParams } from 'react-router';
-import { Select, SelectItem } from '../components';
 import {
   useChangeOrderClient,
   useClientNameDictionary,
   useOrder,
 } from '../hooks/query';
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Typography,
+} from '@mui/material';
 
 export const OrderPage = () => {
   const { id } = useParams();
@@ -13,38 +20,37 @@ export const OrderPage = () => {
   const { data: order } = useOrder({ id: id as string });
   const { mutateAsync: changeClient } = useChangeOrderClient(id as string);
 
-  const clientSelectItems = useMemo((): SelectItem[] => {
-    if (!clients) return [];
-
-    return Object.entries(clients.data).map(([id, name]) => ({
-      label: name,
-      key: id,
-    }));
-  }, [clients]);
-
   if (!order) return <p>No data</p>;
 
+  const handleChangeClient = (event: SelectChangeEvent) => {
+    changeClient({
+      orderID: order.data._id.toString(),
+      newClientID: event.target.value,
+    });
+  };
+
   return (
-    <div>
-      <p>{order.data.title}</p>
-      <Link
-        to={{
-          pathname: `/client/${order.data.client_id}`,
-        }}
-      >
-        <p>{clients?.data[order.data.client_id.toString()]}</p>
-      </Link>
-      <Select
-        label="Change client"
-        defaultValueKey={order.data.client_id.toString()}
-        items={clientSelectItems}
-        onChange={(client) =>
-          changeClient({
-            orderID: order.data._id.toString(),
-            newClientID: client.key,
-          })
-        }
-      />
-    </div>
+    <Box display="flex" flexDirection="column" gap={3}>
+      <Typography variant="h2">{order.data.title}</Typography>
+      <Typography variant="h4">Client</Typography>
+      <Typography>
+        Current client:{' '}
+        <Link to={{ pathname: `/client/${order.data.client_id}` }}>
+          {clients?.data[order.data.client_id.toString()]}
+        </Link>
+      </Typography>
+      <FormControl>
+        <InputLabel>Change client</InputLabel>
+        <Select
+          label="Change client"
+          defaultValue={order.data.client_id.toString()}
+          onChange={handleChangeClient}
+        >
+          {Object.entries(clients?.data || {}).map(([id, name]) => (
+            <MenuItem value={id}>{name}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Box>
   );
 };

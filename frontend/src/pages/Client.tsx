@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router';
 import { useClient, useClientOrders } from '../hooks/query';
+import { Box, List, ListItem, Paper, Typography } from '@mui/material';
 
 export const ClientPage = () => {
   const { id } = useParams();
@@ -13,22 +14,22 @@ export const ClientPage = () => {
   if (!client) return <p>No data</p>;
 
   return (
-    <p>
-      {client.data.name}
-      {orders?.data.length === 0 && <p>No orders</p>}
-      <ul>
+    <Box display="flex" flexDirection="column" gap={3}>
+      <Typography variant="h2">{client.data.name}</Typography>
+      {orders?.data.length === 0 && <Typography>No orders</Typography>}
+      <List component={Paper}>
         {orders?.data.map((order) => (
-          <li>
+          <ListItem>
             <Link
               to={{
                 pathname: `/order/${order._id}`,
               }}
             >
-              {order.title}
+              <Typography>{order.title}</Typography>
             </Link>
-          </li>
+          </ListItem>
         ))}
-      </ul>
-    </p>
+      </List>
+    </Box>
   );
 };

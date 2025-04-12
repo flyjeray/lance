@@ -1,4 +1,4 @@
-import { Button, Input } from '../../components';
+import { Box, Button, Input, TextField } from '@mui/material';
 import { useLogin } from '../../hooks/query';
 
 export const LoginForm = () => {
@@ -16,15 +16,23 @@ export const LoginForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Input type="text" id="login" name="login" placeholder="Login" required />
-      <Input
-        type="password"
-        id="password"
-        name="password"
-        placeholder="Password"
-        required
-      />
-      <Button type="submit" label="Login" />
+      <Box display="flex" flexDirection="column" gap={3}>
+        <TextField
+          type="text"
+          id="login"
+          name="login"
+          placeholder="Login"
+          required
+        />
+        <TextField
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Password"
+          required
+        />
+        <Button type="submit">Login</Button>
+      </Box>
     </form>
   );
 };

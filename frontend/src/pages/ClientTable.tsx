@@ -1,51 +1,69 @@
-import { Client } from '@lance/shared/models/client';
 import { Link, useNavigate, useParams } from 'react-router';
-import { Columns, Pagination, Table } from '../components';
 import { useClientList } from '../hooks/query';
-
-const cols: Columns<Client> = {
-  name: {
-    label: "Client's Name",
-    render: (client) => (
-      <Link
-        to={{
-          pathname: `/client/${client._id}`,
-        }}
-      >
-        {client.name}
-      </Link>
-    ),
-  },
-  description: {
-    label: "Client's Description",
-    render: (client) => <p>{client.description}</p>,
-  },
-};
+import {
+  Box,
+  Container,
+  Pagination,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from '@mui/material';
 
 export const ClientTablePage = () => {
   const { page } = useParams();
   const navigate = useNavigate();
-  const { data: clientList } = useClientList({
+  const { data: clients } = useClientList({
     page,
     perPage: '5',
   });
 
-  if (!clientList) return <p>No data</p>;
+  if (!clients) return <p>No data</p>;
 
   return (
-    <>
-      <Table data={clientList.data} columns={cols} />
+    <Box display="flex" flexDirection="column" alignItems="center" gap={3}>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell align="left">Description</TableCell>
+            </TableRow>
+          </TableHead>
 
-      {clientList.pagination && (
+          <TableBody>
+            {clients.data.map((client) => (
+              <TableRow
+                key={`row-client-${client._id}`}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  <Link
+                    to={{
+                      pathname: `/client/${client._id}`,
+                    }}
+                  >
+                    {client.name}
+                  </Link>
+                </TableCell>
+                <TableCell align="left">{client.description || '-'}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {clients.pagination && (
         <Pagination
-          page={clientList.pagination.page}
-          lastPage={clientList.pagination.totalPages}
-          delta={2}
-          onPageChange={(page) => {
+          page={clients.pagination.page}
+          count={clients.pagination.totalPages}
+          onChange={(_, page) => {
             navigate(`/clients/${page}`);
           }}
         />
-      )}
-    </>
+      )}{' '}
+    </Box>
   );
 };

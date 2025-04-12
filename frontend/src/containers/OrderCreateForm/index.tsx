@@ -1,4 +1,4 @@
-import { Button, Input } from '../../components';
+import { Box, Button, TextField } from '@mui/material';
 import { useCreateOrder } from '../../hooks/query';
 
 export const OrderCreateForm = () => {
@@ -23,28 +23,30 @@ export const OrderCreateForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Input
-        type="text"
-        id="title"
-        name="title"
-        placeholder="Order title"
-        required
-      />
-      <Input
-        type="text"
-        id="client"
-        name="client"
-        placeholder="Client ID"
-        required
-      />
-      <Input
-        type="number"
-        id="price"
-        name="price"
-        placeholder="Price"
-        required
-      />
-      <Button label="Create order" type="submit" />
+      <Box display="flex" flexDirection="column" gap={3}>
+        <TextField
+          type="text"
+          id="title"
+          name="title"
+          placeholder="Order title"
+          required
+        />
+        <TextField
+          type="text"
+          id="client"
+          name="client"
+          placeholder="Client ID"
+          required
+        />
+        <TextField
+          type="number"
+          id="price"
+          name="price"
+          placeholder="Price"
+          required
+        />
+        <Button type="submit">Create order</Button>
+      </Box>
     </form>
   );
 };

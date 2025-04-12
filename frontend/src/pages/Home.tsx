@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router';
 import { useEffect } from 'react';
 import { LoginForm } from '../containers';
 import { useMe } from '../hooks/query';
+import { Box, Container, Typography } from '@mui/material';
 
 export const HomePage = () => {
   const navigate = useNavigate();
@@ -14,9 +15,17 @@ export const HomePage = () => {
   }, [me]);
 
   return (
-    <div>
-      <h1>Home Page</h1>
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="100vh"
+    >
+      <Typography variant="h1" mb={4}>
+        Lance
+      </Typography>
       <LoginForm />
-    </div>
+    </Box>
   );
 };

@@ -1,17 +1,11 @@
-import {
-  ClientCreateForm,
-  ClientsTopList,
-  OrderCreateForm,
-  OrdersTopList,
-} from '../containers';
+import { Box } from '@mui/material';
+import { ClientCreateForm, OrderCreateForm } from '../containers';
 
 export const DashboardPage = () => {
   return (
-    <div>
-      <OrdersTopList />
-      <ClientsTopList />
+    <Box display="flex" flexDirection="row" gap={3}>
       <OrderCreateForm />
       <ClientCreateForm />
-    </div>
+    </Box>
   );
 };
