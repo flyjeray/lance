@@ -13,23 +13,28 @@ export const ClientPage = () => {
 
   if (!client) return <p>No data</p>;
 
+  const hasOrders = orders && orders.data.length > 0;
+
   return (
     <Box display="flex" flexDirection="column" gap={3}>
       <Typography variant="h2">{client.data.name}</Typography>
-      {orders?.data.length === 0 && <Typography>No orders</Typography>}
-      <List component={Paper}>
-        {orders?.data.map((order) => (
-          <ListItem>
-            <Link
-              to={{
-                pathname: `/order/${order._id}`,
-              }}
-            >
-              <Typography>{order.title}</Typography>
-            </Link>
-          </ListItem>
-        ))}
-      </List>
+      {hasOrders ? (
+        <List component={Paper}>
+          {orders?.data.map((order) => (
+            <ListItem>
+              <Link
+                to={{
+                  pathname: `/order/${order._id}`,
+                }}
+              >
+                <Typography>{order.title}</Typography>
+              </Link>
+            </ListItem>
+          ))}
+        </List>
+      ) : (
+        <Typography>No orders</Typography>
+      )}
     </Box>
   );
 };
