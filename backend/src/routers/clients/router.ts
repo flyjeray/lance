@@ -40,4 +40,10 @@ router.get(
   ClientsController.getOrders
 );
 
+router.delete(
+  endpoints.delete,
+  AuthMiddleware.checkAuth,
+  ClientsController.delete
+);
+
 export { router as ClientsRouter };

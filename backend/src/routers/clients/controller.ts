@@ -135,4 +135,30 @@ export class ClientsController {
       return res.status(400).json({ error });
     }
   };
+
+  static delete = async (
+    req: Request<SingleEntityGetPayload>,
+    res: Response<APIResponse<string>, VerifiedUserLocals>
+  ) => {
+    const { id } = req.query;
+    const { user } = res.locals;
+
+    try {
+      const client = await ClientModel.findOne({
+        _id: id,
+        user_owner_id: user,
+      });
+
+      if (!client) {
+        return res.status(404).json({ error: `Client ${id} not found` });
+      }
+
+      await OrderModel.deleteMany({ client_id: client._id });
+      await ClientModel.deleteOne({ _id: client._id });
+
+      return res.status(200).json({ data: 'success' });
+    } catch (error) {
+      return res.status(400).json({ error });
+    }
+  };
 }

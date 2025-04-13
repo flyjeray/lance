@@ -31,6 +31,7 @@ const APIEndpoints = {
       getSingle: '/single',
       nameDictionary: '/dictionary',
       getClientOrders: '/orders',
+      delete: '/delete',
     },
   },
 } as const satisfies APIStructure;

@@ -4,6 +4,7 @@ import {
   PaginationPayload,
   SingleEntityGetPayload,
 } from '@lance/shared/models/api/general';
+import { OrdersQueryKeys } from './orders';
 
 export enum ClientsQueryKeys {
   GET_LIST = 'CLIENTS_GET_LIST',
@@ -23,6 +24,26 @@ export const useCreateClient = () => {
       });
       queryClient.invalidateQueries({
         queryKey: [ClientsQueryKeys.GET_NAMES],
+      });
+    },
+  });
+};
+
+export const useDeleteClient = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ClientsAPI.delete,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [ClientsQueryKeys.GET_LIST],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
+        queryKey: [ClientsQueryKeys.GET_NAMES],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [OrdersQueryKeys.GET_LIST],
       });
     },
   });
