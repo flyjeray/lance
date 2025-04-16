@@ -8,11 +8,12 @@ import {
 import {
   CreateOrderPayload,
   ChangeOrdersClientPayload,
+  GetFilteredOrdersPayload,
 } from '@lance/shared/models/api/orders';
 import { ClientModel } from '@lance/shared/models/client';
 import { OrderBase, OrderModel } from '@lance/shared/models/order';
 import { Request, Response } from 'express';
-import { Types } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 
 export class OrdersController {
   static create = async (
@@ -47,17 +48,31 @@ export class OrdersController {
   };
 
   static get = async (
-    req: Request<PaginationPayload>,
+    req: Request<PaginationPayload & GetFilteredOrdersPayload>,
     res: Response<PaginatedAPIResponse<OrderBase[]>, VerifiedUserLocals>
   ) => {
-    const { page = 1, perPage = 10 } = req.query;
+    const { page = 1, perPage = 10, clientID, minPrice, maxPrice } = req.query;
     const { user } = res.locals;
 
     try {
       const _page = Number(page);
       const _perPage = Number(perPage);
 
-      const orders = await OrderModel.find({ user_owner_id: user })
+      const conditions: FilterQuery<OrderBase> = {
+        user_owner_id: user,
+      };
+
+      if (clientID) {
+        conditions.client_id = clientID;
+      }
+
+      if (minPrice || maxPrice) {
+        conditions.price = {};
+        if (minPrice) conditions.price.$gte = Number(minPrice);
+        if (maxPrice) conditions.price.$lte = Number(maxPrice);
+      }
+
+      const orders = await OrderModel.find(conditions)
         .skip((_page - 1) * _perPage)
         .limit(_perPage);
       const totalClients = await OrderModel.countDocuments();

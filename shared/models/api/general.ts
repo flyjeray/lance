@@ -25,3 +25,5 @@ export type APIResponse<T> = SuccessfulAPIResponse<T> | FailedAPIResponse;
 export type PaginatedAPIResponse<T> =
   | SuccessfulPaginatedAPIResponse<T>
   | FailedAPIResponse;
+
+export type PartialNull<T> = { [K in keyof T]: T[K] | null };

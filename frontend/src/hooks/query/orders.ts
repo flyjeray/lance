@@ -5,6 +5,7 @@ import {
   SingleEntityGetPayload,
 } from '@lance/shared/models/api/general';
 import { ClientsQueryKeys } from './clients';
+import { GetFilteredOrdersPayload } from '@lance/shared/models/api/orders';
 
 export enum OrdersQueryKeys {
   GET_LIST = 'ORDERS_GET_LIST',
@@ -24,9 +25,11 @@ export const useCreateOrder = () => {
   });
 };
 
-export const useOrderList = (data: PaginationPayload) =>
+export const useOrderList = (
+  data: PaginationPayload & GetFilteredOrdersPayload
+) =>
   useQuery({
-    queryKey: [OrdersQueryKeys.GET_LIST, data.page],
+    queryKey: [OrdersQueryKeys.GET_LIST, data],
     queryFn: () => OrdersAPI.getPaginated(data),
   });
 

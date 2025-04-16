@@ -1,3 +1,5 @@
+import { PartialNull } from './general';
+
 export type CreateOrderPayload = {
   title: string;
   description?: string;
@@ -9,3 +11,9 @@ export type ChangeOrdersClientPayload = {
   orderID: string;
   newClientID: string;
 };
+
+export type GetFilteredOrdersPayload = PartialNull<{
+  clientID: string;
+  minPrice: number;
+  maxPrice: number;
+}>;
