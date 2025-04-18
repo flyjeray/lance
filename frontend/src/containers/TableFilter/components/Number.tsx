@@ -4,14 +4,14 @@ import useDebounce from '../../../hooks/useDebounce';
 import { ChangeEvent, useEffect, useState } from 'react';
 
 export const TableNumberFilter = (props: TableNumberFilterProps) => {
-  const [value, setValue] = useState<number | null>(null);
+  const [value, setValue] = useState<number | undefined>(undefined);
   const debounced = useDebounce(value, 500);
 
   const onChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     if (!event.target.value) {
-      setValue(null);
+      setValue(undefined);
     } else {
       const asNumber = Number(event.target.value);
 

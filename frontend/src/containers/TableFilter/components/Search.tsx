@@ -7,7 +7,7 @@ export const TableSelectFilter = (props: TableSelectFilterProps) => {
     _: SyntheticEvent<Element, Event>,
     selected: { label: string; value: string } | null
   ) => {
-    props.onChange(selected?.value || null);
+    props.onChange(selected?.value || undefined);
   };
 
   return (

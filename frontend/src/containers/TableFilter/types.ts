@@ -13,14 +13,14 @@ export type TableSelectFilterProps = TableFilterBase & {
     label: string;
     value: string;
   }[];
-  onChange: (value: string | null) => void;
+  onChange: (value: string | undefined) => void;
 };
 
 export type TableNumberFilterProps = TableFilterBase & {
   type: TableFilterFieldType.Number;
   min?: number;
   max?: number;
-  onChange: (value: number | null) => void;
+  onChange: (value: number | undefined) => void;
 };
 
 export type SingleTableFilterProps =

@@ -48,7 +48,7 @@ export class OrdersController {
   };
 
   static get = async (
-    req: Request<PaginationPayload & GetFilteredOrdersPayload>,
+    req: Request<GetFilteredOrdersPayload & PaginationPayload>,
     res: Response<PaginatedAPIResponse<OrderBase[]>, VerifiedUserLocals>
   ) => {
     const { page = 1, perPage = 10, clientID, minPrice, maxPrice } = req.query;

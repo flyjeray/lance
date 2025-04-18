@@ -24,11 +24,7 @@ export const OrdersTablePage = () => {
   const { page } = useParams();
   const navigate = useNavigate();
 
-  const [filters, setFilters] = useState<GetFilteredOrdersPayload>({
-    clientID: null,
-    minPrice: null,
-    maxPrice: null,
-  });
+  const [filters, setFilters] = useState<GetFilteredOrdersPayload>({});
 
   const { data: clients } = useClientNameDictionary();
   const { data: orders } = useOrderList({ page, perPage: '5', ...filters });
