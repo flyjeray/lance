@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 import { config } from '../config';
-import { setupAdmin } from './setupAdmin';
+import { setupUser } from './setupAdmin';
 
 export const connectToDatabase = async () => {
   try {
     await mongoose.connect(config.mongodbUri);
-    await setupAdmin();
+    await setupUser();
   } catch (err) {
     console.error('MongoDB connection error:', err);
   }

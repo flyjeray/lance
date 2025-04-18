@@ -1,12 +1,10 @@
 import { Document, Schema, model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-import { UserRole } from '../constants/roles';
 
 export type User = {
   login: string;
   display_name: string;
   password: string;
-  role: UserRole;
   comparePassword: (password: string) => Promise<boolean>;
 };
 
@@ -20,12 +18,6 @@ const userSchema = new Schema<UserDocument>({
   },
   password: {
     type: String,
-    required: true,
-  },
-  role: {
-    type: String,
-    enum: UserRole,
-    default: UserRole.EDITOR,
     required: true,
   },
 });
