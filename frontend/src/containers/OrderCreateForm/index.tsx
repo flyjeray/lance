@@ -1,8 +1,9 @@
-import { Box, Button, TextField } from '@mui/material';
-import { useCreateOrder } from '../../hooks/query';
+import { Box, Button, MenuItem, Select, TextField } from '@mui/material';
+import { useCreateOrder, useStatusList } from '../../hooks/query';
 
 export const OrderCreateForm = () => {
   const { mutateAsync: createOrder } = useCreateOrder();
+  const { data: statuses } = useStatusList();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -11,6 +12,7 @@ export const OrderCreateForm = () => {
     const title = formData.get('title') as string;
     const client = formData.get('client') as string;
     const price = formData.get('price') as string;
+    const status = formData.get('status') as string;
 
     const priceAsNumber = Number(price);
 
@@ -18,6 +20,7 @@ export const OrderCreateForm = () => {
       title,
       client,
       price: priceAsNumber,
+      status,
     });
   };
 
@@ -45,6 +48,11 @@ export const OrderCreateForm = () => {
           placeholder="Price"
           required
         />
+        <Select name="status" id="status">
+          {statuses?.data.map((status) => (
+            <MenuItem value={status._id.toString()}>{status.label}</MenuItem>
+          ))}
+        </Select>
         <Button type="submit">Create order</Button>
       </Box>
     </form>

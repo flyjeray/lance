@@ -34,4 +34,10 @@ router.put(
   OrdersController.changeClient
 );
 
+router.put(
+  endpoints.changeStatus,
+  AuthMiddleware.checkAuth,
+  OrdersController.changeStatus
+);
+
 export { router as OrdersRouter };

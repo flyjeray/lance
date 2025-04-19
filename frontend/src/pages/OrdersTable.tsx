@@ -1,9 +1,16 @@
 import { Link, useNavigate, useParams } from 'react-router';
-import { useClientNameDictionary, useOrderList } from '../hooks/query';
+import {
+  useChangeOrderStatus,
+  useClientNameDictionary,
+  useOrderList,
+  useStatusList,
+} from '../hooks/query';
 import {
   Box,
+  MenuItem,
   Pagination,
   Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
@@ -27,7 +34,9 @@ export const OrdersTablePage = () => {
   const [filters, setFilters] = useState<GetFilteredOrdersPayload>({});
 
   const { data: clients } = useClientNameDictionary();
+  const { data: statuses } = useStatusList();
   const { data: orders } = useOrderList({ page, perPage: '5', ...filters });
+  const { mutateAsync: changeStatus } = useChangeOrderStatus();
 
   const filterElements: SingleTableFilterProps[] = [
     {
@@ -49,6 +58,16 @@ export const OrdersTablePage = () => {
       label: 'Maximal Price',
       onChange: (price) => setFilters((prev) => ({ ...prev, maxPrice: price })),
     },
+    {
+      type: TableFilterFieldType.Select,
+      label: 'Status',
+      options:
+        statuses?.data.map((status) => ({
+          label: status.label,
+          value: status._id.toString(),
+        })) || [],
+      onChange: (statusID) => setFilters((prev) => ({ ...prev, statusID })),
+    },
   ];
 
   return (
@@ -65,36 +84,54 @@ export const OrdersTablePage = () => {
                 <TableCell>Title</TableCell>
                 <TableCell align="left">Description</TableCell>
                 <TableCell align="left">Price</TableCell>
-                <TableCell align="left">Is Completed</TableCell>
                 <TableCell align="left">Client</TableCell>
+                <TableCell align="left">Status</TableCell>
               </TableRow>
             </TableHead>
 
             <TableBody>
-              {orders?.data.map((order) => (
-                <TableRow
-                  key={`row-order-${order._id}`}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    <Link to={{ pathname: `/order/${order._id}` }}>
-                      {order.title}
-                    </Link>
-                  </TableCell>
-                  <TableCell align="left">{order.description || '-'}</TableCell>
-                  <TableCell align="left">
-                    {order.price ? `${order.price}` : '-'}
-                  </TableCell>
-                  <TableCell align="left">
-                    {order.is_completed ? 'Yes' : 'No'}
-                  </TableCell>
-                  <TableCell align="left">
-                    <Link to={{ pathname: `/client/${order.client_id}` }}>
-                      {clients?.data[order.client_id.toString()]}
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {orders?.data.map((order) => {
+                return (
+                  <TableRow
+                    key={`row-order-${order._id}`}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      <Link to={{ pathname: `/order/${order._id}` }}>
+                        {order.title}
+                      </Link>
+                    </TableCell>
+                    <TableCell align="left">
+                      {order.description || '-'}
+                    </TableCell>
+                    <TableCell align="left">
+                      {order.price ? `${order.price}` : '-'}
+                    </TableCell>
+                    <TableCell align="left">
+                      <Link to={{ pathname: `/client/${order.client_id}` }}>
+                        {clients?.data[order.client_id.toString()]}
+                      </Link>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Select
+                        defaultValue={order.status_id?.toString()}
+                        onChange={(event) => {
+                          changeStatus({
+                            orderID: order._id.toString(),
+                            newStatusID: event.target.value,
+                          });
+                        }}
+                      >
+                        {statuses?.data.map((status) => (
+                          <MenuItem value={status._id.toString()}>
+                            {status.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>

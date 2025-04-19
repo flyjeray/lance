@@ -21,6 +21,7 @@ const APIEndpoints = {
       getPaginated: '/paginated',
       getSingle: '/single',
       changeClient: '/change_client',
+      changeStatus: '/change_status',
     },
   },
   clients: {
@@ -32,6 +33,13 @@ const APIEndpoints = {
       nameDictionary: '/dictionary',
       getClientOrders: '/orders',
       delete: '/delete',
+    },
+  },
+  statuses: {
+    prefix: '/statuses',
+    endpoints: {
+      create: '/create',
+      get: '/get',
     },
   },
 } as const satisfies APIStructure;

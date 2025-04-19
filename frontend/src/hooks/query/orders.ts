@@ -54,3 +54,19 @@ export const useChangeOrderClient = (orderID: string) => {
     },
   });
 };
+
+export const useChangeOrderStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: OrdersAPI.changeStatus,
+    onSuccess: (_, payload) => {
+      queryClient.invalidateQueries({
+        queryKey: [OrdersQueryKeys.GET_SINGLE, payload.orderID],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [ClientsQueryKeys.GET_ORDERS],
+      });
+    },
+  });
+};

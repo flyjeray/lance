@@ -31,6 +31,7 @@ export const ProtectedLayout = () => {
         <MenuItem onClick={() => navigate('/')}>Home</MenuItem>
         <MenuItem onClick={() => navigate('/clients/1')}>Clients</MenuItem>
         <MenuItem onClick={() => navigate('/orders/1')}>Orders</MenuItem>
+        <MenuItem onClick={() => navigate('/statuses')}>Statuses</MenuItem>
 
         <Divider />
 

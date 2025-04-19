@@ -9,9 +9,11 @@ import {
   CreateOrderPayload,
   ChangeOrdersClientPayload,
   GetFilteredOrdersPayload,
+  ChangeOrdersStatusPayload,
 } from '@lance/shared/models/api/orders';
 import { ClientModel } from '@lance/shared/models/client';
 import { OrderBase, OrderModel } from '@lance/shared/models/order';
+import { StatusModel } from '@lance/shared/models/status';
 import { Request, Response } from 'express';
 import { FilterQuery, Types } from 'mongoose';
 
@@ -20,7 +22,7 @@ export class OrdersController {
     req: Request<object, object, CreateOrderPayload>,
     res: Response<APIResponse<OrderBase>, VerifiedUserLocals>
   ) => {
-    const { title, description, client, price } = req.body;
+    const { title, description, client, price, status } = req.body;
     const { user } = res.locals;
 
     try {
@@ -39,6 +41,7 @@ export class OrdersController {
         client_id: client,
         user_owner_id: user,
         price,
+        status_id: status,
       });
       const saved = await order.save();
       return res.status(200).json({ data: saved });
@@ -51,7 +54,14 @@ export class OrdersController {
     req: Request<GetFilteredOrdersPayload & PaginationPayload>,
     res: Response<PaginatedAPIResponse<OrderBase[]>, VerifiedUserLocals>
   ) => {
-    const { page = 1, perPage = 10, clientID, minPrice, maxPrice } = req.query;
+    const {
+      page = 1,
+      perPage = 10,
+      clientID,
+      minPrice,
+      maxPrice,
+      statusID,
+    } = req.query;
     const { user } = res.locals;
 
     try {
@@ -70,6 +80,10 @@ export class OrdersController {
         conditions.price = {};
         if (minPrice) conditions.price.$gte = Number(minPrice);
         if (maxPrice) conditions.price.$lte = Number(maxPrice);
+      }
+
+      if (statusID) {
+        conditions.status_id = statusID;
       }
 
       const orders = await OrderModel.find(conditions)
@@ -140,6 +154,41 @@ export class OrdersController {
           .json({ error: `Client ${newClientID} not found` });
 
       order.client_id = new Types.ObjectId(newClientID);
+      const saved = await order.save();
+
+      return res.status(200).json({ data: saved });
+    } catch (error) {
+      return res.status(400).json({ error });
+    }
+  };
+
+  static changeStatus = async (
+    req: Request<object, object, ChangeOrdersStatusPayload>,
+    res: Response<APIResponse<OrderBase>, VerifiedUserLocals>
+  ) => {
+    const { orderID, newStatusID } = req.body;
+    const { user } = res.locals;
+
+    try {
+      const order = await OrderModel.findOne({
+        _id: orderID,
+        user_owner_id: user,
+      });
+
+      if (!order)
+        return res.status(404).json({ error: `Order ${orderID} not found` });
+
+      const status = await StatusModel.findOne({
+        _id: newStatusID,
+        user_owner_id: user,
+      });
+
+      if (!status)
+        return res
+          .status(404)
+          .json({ error: `Status ${newStatusID} not found` });
+
+      order.status_id = new Types.ObjectId(newStatusID);
       const saved = await order.save();
 
       return res.status(200).json({ data: saved });

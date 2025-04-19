@@ -20,6 +20,7 @@ app.use(cookieParser());
 app.use(APIEndpoints.auth.prefix, routers.auth);
 app.use(APIEndpoints.orders.prefix, routers.orders);
 app.use(APIEndpoints.clients.prefix, routers.clients);
+app.use(APIEndpoints.statuses.prefix, routers.statuses);
 
 const startServer = async () => {
   await connectToDatabase();

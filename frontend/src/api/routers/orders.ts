@@ -1,5 +1,6 @@
 import {
   ChangeOrdersClientPayload,
+  ChangeOrdersStatusPayload,
   CreateOrderPayload,
 } from '@lance/shared/models/api/orders';
 import { OrderBase } from '@lance/shared/models/order';
@@ -42,5 +43,12 @@ export class OrdersAPI {
       .put<
         SuccessfulAPIResponse<OrderBase>
       >(prefix + endpoints.changeClient, data)
+      .then((res) => res.data);
+
+  static changeStatus = (data: ChangeOrdersStatusPayload) =>
+    axiosInstance
+      .put<
+        SuccessfulAPIResponse<OrderBase>
+      >(prefix + endpoints.changeStatus, data)
       .then((res) => res.data);
 }

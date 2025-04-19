@@ -4,10 +4,10 @@ export type OrderBase = {
   _id: Types.ObjectId;
   title: string;
   description: string;
-  is_completed: boolean;
   price: number;
   client_id: Types.ObjectId;
   user_owner_id: Types.ObjectId;
+  status_id: Types.ObjectId;
 };
 
 type OrderDocument = Document & OrderBase;
@@ -19,11 +19,6 @@ const orderSchema = new Schema<OrderDocument>({
   },
   description: {
     type: String,
-  },
-  is_completed: {
-    type: Boolean,
-    default: false,
-    required: true,
   },
   price: {
     type: Number,
@@ -37,6 +32,11 @@ const orderSchema = new Schema<OrderDocument>({
   user_owner_id: {
     type: Schema.Types.ObjectId,
     ref: 'users',
+    required: true,
+  },
+  status_id: {
+    type: Schema.Types.ObjectId,
+    ref: 'statuses',
     required: true,
   },
 });
