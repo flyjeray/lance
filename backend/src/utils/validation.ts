@@ -1,9 +1,32 @@
 import { Request, Response, NextFunction } from 'express';
-import { validationResult, ValidationChain, body } from 'express-validator';
+import {
+  validationResult,
+  ValidationChain,
+  body,
+  query,
+} from 'express-validator';
 
-export const validatePayload = <T>(fields: (keyof T)[]) => {
+enum ValidatorType {
+  QUERY = 'query',
+  BODY = 'body',
+}
+
+type ValidatorProps<T> = {
+  type: ValidatorType;
+  fields: (keyof T)[];
+};
+
+const validator = <T>({ type, fields }: ValidatorProps<T>) => {
+  const ValidatorFunctions: Record<
+    ValidatorType,
+    (key: string) => ValidationChain
+  > = {
+    [ValidatorType.BODY]: body,
+    [ValidatorType.QUERY]: query,
+  };
+
   const validations: ValidationChain[] = fields.map((field) =>
-    body(String(field))
+    ValidatorFunctions[type](String(field))
       .notEmpty()
       .withMessage(`${String(field)} is required`)
   );
@@ -19,3 +42,9 @@ export const validatePayload = <T>(fields: (keyof T)[]) => {
     next();
   };
 };
+
+export const validatePayload = <T>(fields: (keyof T)[]) =>
+  validator({ type: ValidatorType.BODY, fields });
+
+export const validateQuery = <T>(fields: (keyof T)[]) =>
+  validator({ type: ValidatorType.QUERY, fields });

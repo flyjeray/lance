@@ -2,8 +2,9 @@ import AuthMiddleware from '@/middleware/auth';
 import express from 'express';
 import { ClientsController } from './controller';
 import APIEndpoints from '@lance/shared/constants/endpoints';
-import { validatePayload } from '@/utils/validation';
+import { validatePayload, validateQuery } from '@/utils/validation';
 import { CreateClientPayload } from '@lance/shared/models/api/clients';
+import { SingleEntityGetPayload } from '@lance/shared/models/api/general';
 
 const router = express.Router();
 
@@ -25,6 +26,7 @@ router.get(
 router.get(
   endpoints.getSingle,
   AuthMiddleware.checkAuth,
+  validateQuery<SingleEntityGetPayload>(['id']),
   ClientsController.getSingle
 );
 
@@ -37,12 +39,14 @@ router.get(
 router.get(
   endpoints.getClientOrders,
   AuthMiddleware.checkAuth,
+  validateQuery<SingleEntityGetPayload>(['id']),
   ClientsController.getOrders
 );
 
 router.delete(
   endpoints.delete,
   AuthMiddleware.checkAuth,
+  validateQuery<SingleEntityGetPayload>(['id']),
   ClientsController.delete
 );
 
