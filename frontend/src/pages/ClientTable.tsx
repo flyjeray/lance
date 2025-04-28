@@ -10,7 +10,9 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from '@mui/material';
+import { ClientCreateForm } from '../containers';
 
 export const ClientTablePage = () => {
   const { page } = useParams();
@@ -24,6 +26,10 @@ export const ClientTablePage = () => {
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" gap={3}>
+      <Typography variant="h5" width="100%" align="left">
+        Create new client
+      </Typography>
+      <ClientCreateForm />
       <TableContainer component={Paper}>
         <Table>
           <TableHead>

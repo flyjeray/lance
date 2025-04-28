@@ -15,24 +15,28 @@ export const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Box display="flex" flexDirection="column" gap={3}>
-        <TextField
-          type="text"
-          id="login"
-          name="login"
-          placeholder="Login"
-          required
-        />
-        <TextField
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Password"
-          required
-        />
-        <Button type="submit">Login</Button>
-      </Box>
-    </form>
+    <Box
+      display="flex"
+      component="form"
+      onSubmit={handleSubmit}
+      flexDirection="column"
+      gap={3}
+    >
+      <TextField
+        type="text"
+        id="login"
+        name="login"
+        placeholder="Login"
+        required
+      />
+      <TextField
+        type="password"
+        id="password"
+        name="password"
+        placeholder="Password"
+        required
+      />
+      <Button type="submit">Login</Button>
+    </Box>
   );
 };

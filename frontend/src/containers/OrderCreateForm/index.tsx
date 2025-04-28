@@ -1,4 +1,4 @@
-import { Box, Button, MenuItem, Select, TextField } from '@mui/material';
+import { Button, Grid, MenuItem, Select, TextField } from '@mui/material';
 import { useCreateOrder, useStatusList } from '../../hooks/query';
 
 export const OrderCreateForm = () => {
@@ -25,36 +25,40 @@ export const OrderCreateForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Box display="flex" flexDirection="column" gap={3}>
-        <TextField
-          type="text"
-          id="title"
-          name="title"
-          placeholder="Order title"
-          required
-        />
-        <TextField
-          type="text"
-          id="client"
-          name="client"
-          placeholder="Client ID"
-          required
-        />
-        <TextField
-          type="number"
-          id="price"
-          name="price"
-          placeholder="Price"
-          required
-        />
-        <Select name="status" id="status">
-          {statuses?.data.map((status) => (
-            <MenuItem value={status._id.toString()}>{status.label}</MenuItem>
-          ))}
-        </Select>
-        <Button type="submit">Create order</Button>
-      </Box>
-    </form>
+    <Grid
+      container
+      component="form"
+      onSubmit={handleSubmit}
+      spacing={3}
+      width="100%"
+    >
+      <TextField
+        type="text"
+        id="title"
+        name="title"
+        placeholder="Order title"
+        required
+      />
+      <TextField
+        type="text"
+        id="client"
+        name="client"
+        placeholder="Client ID"
+        required
+      />
+      <TextField
+        type="number"
+        id="price"
+        name="price"
+        placeholder="Price"
+        required
+      />
+      <Select name="status" id="status" label="Status">
+        {statuses?.data.map((status) => (
+          <MenuItem value={status._id.toString()}>{status.label}</MenuItem>
+        ))}
+      </Select>
+      <Button type="submit">Create order</Button>
+    </Grid>
   );
 };

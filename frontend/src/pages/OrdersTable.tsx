@@ -19,7 +19,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import { TableFilter } from '../containers';
+import { OrderCreateForm, TableFilter } from '../containers';
 import {
   SingleTableFilterProps,
   TableFilterFieldType,
@@ -72,6 +72,14 @@ export const OrdersTablePage = () => {
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" gap={3}>
+      <Typography variant="h5" width="100%" align="left">
+        Create new order
+      </Typography>
+      <OrderCreateForm />
+
+      <Typography variant="h5" width="100%" align="left">
+        Filters
+      </Typography>
       <TableFilter filters={filterElements} />
 
       {!orders?.data && <Typography>No orders yet</Typography>}

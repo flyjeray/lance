@@ -10,7 +10,7 @@ export const HomePage = () => {
 
   useEffect(() => {
     if (me) {
-      navigate('/dashboard');
+      navigate('/clients/1');
     }
   }, [me]);
 

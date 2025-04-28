@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from '@mui/material';
+import { Button, Grid, TextField } from '@mui/material';
 import { useCreateStatus } from '../../hooks/query';
 
 export const StatusCreateForm = () => {
@@ -14,17 +14,21 @@ export const StatusCreateForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Box display="flex" flexDirection="column" gap={3}>
-        <TextField
-          type="text"
-          id="label"
-          name="label"
-          placeholder="Status label"
-          required
-        />
-        <Button type="submit">Create status</Button>
-      </Box>
-    </form>
+    <Grid
+      container
+      component="form"
+      onSubmit={handleSubmit}
+      spacing={3}
+      width="100%"
+    >
+      <TextField
+        type="text"
+        id="label"
+        name="label"
+        placeholder="Status label"
+        required
+      />
+      <Button type="submit">Create status</Button>
+    </Grid>
   );
 };

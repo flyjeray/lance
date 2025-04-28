@@ -4,7 +4,6 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 import {
   ClientPage,
   ClientTablePage,
-  DashboardPage,
   HomePage,
   OrderPage,
   StatusesTablePage,
@@ -55,7 +54,6 @@ const App = () => {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route element={<Protected />}>
-                <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/client/:id" element={<ClientPage />} />
                 <Route path="/order/:id" element={<OrderPage />} />
                 <Route path="/clients/:page" element={<ClientTablePage />} />

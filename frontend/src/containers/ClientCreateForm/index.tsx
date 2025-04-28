@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from '@mui/material';
+import { Button, Grid, TextField } from '@mui/material';
 import { useCreateClient } from '../../hooks/query';
 
 export const ClientCreateForm = () => {
@@ -14,17 +14,21 @@ export const ClientCreateForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Box display="flex" flexDirection="column" gap={3}>
-        <TextField
-          type="text"
-          id="name"
-          name="name"
-          placeholder="Client name"
-          required
-        />
-        <Button type="submit">Create client</Button>
-      </Box>
-    </form>
+    <Grid
+      container
+      component="form"
+      onSubmit={handleSubmit}
+      spacing={3}
+      width="100%"
+    >
+      <TextField
+        type="text"
+        id="name"
+        name="name"
+        placeholder="Client name"
+        required
+      />
+      <Button type="submit">Create client</Button>
+    </Grid>
   );
 };
