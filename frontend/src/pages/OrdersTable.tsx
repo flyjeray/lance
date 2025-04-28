@@ -81,6 +81,7 @@ export const OrdersTablePage = () => {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell>ID</TableCell>
                 <TableCell>Title</TableCell>
                 <TableCell align="left">Description</TableCell>
                 <TableCell align="left">Price</TableCell>
@@ -96,6 +97,7 @@ export const OrdersTablePage = () => {
                     key={`row-order-${order._id}`}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
+                    <TableCell width={1}>{order._id.toString()}</TableCell>
                     <TableCell component="th" scope="row">
                       <Link to={{ pathname: `/order/${order._id}` }}>
                         {order.title}

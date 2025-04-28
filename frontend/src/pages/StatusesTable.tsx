@@ -31,7 +31,7 @@ export const StatusesTablePage = () => {
               key={`row-order-${status._id}`}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-              <TableCell component="th" scope="row">
+              <TableCell width={1} component="th" scope="row">
                 {status._id.toString()}
               </TableCell>
               <TableCell align="left">{status.label}</TableCell>

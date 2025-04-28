@@ -28,6 +28,7 @@ export const ClientTablePage = () => {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>ID</TableCell>
               <TableCell>Name</TableCell>
               <TableCell align="left">Description</TableCell>
             </TableRow>
@@ -39,6 +40,7 @@ export const ClientTablePage = () => {
                 key={`row-client-${client._id}`}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
+                <TableCell width={1}>{client._id.toString()}</TableCell>
                 <TableCell component="th" scope="row">
                   <Link
                     to={{
