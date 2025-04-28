@@ -1,9 +1,22 @@
-import { Button, Grid, MenuItem, Select, TextField } from '@mui/material';
-import { useCreateOrder, useStatusList } from '../../hooks/query';
+import {
+  Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from '@mui/material';
+import {
+  useClientNameDictionary,
+  useCreateOrder,
+  useStatusList,
+} from '../../hooks/query';
 
 export const OrderCreateForm = () => {
   const { mutateAsync: createOrder } = useCreateOrder();
   const { data: statuses } = useStatusList();
+  const { data: clients } = useClientNameDictionary();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -39,13 +52,14 @@ export const OrderCreateForm = () => {
         placeholder="Order title"
         required
       />
-      <TextField
-        type="text"
-        id="client"
-        name="client"
-        placeholder="Client ID"
-        required
-      />
+      <FormControl>
+        <InputLabel>Client</InputLabel>
+        <Select name="client" id="client" label="Client" style={{ width: 300 }}>
+          {Object.entries(clients?.data || {}).map(([id, name]) => (
+            <MenuItem value={id.toString()}>{name}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       <TextField
         type="number"
         id="price"
@@ -53,11 +67,19 @@ export const OrderCreateForm = () => {
         placeholder="Price"
         required
       />
-      <Select name="status" id="status" label="Status">
-        {statuses?.data.map((status) => (
-          <MenuItem value={status._id.toString()}>{status.label}</MenuItem>
-        ))}
-      </Select>
+      <FormControl>
+        <InputLabel>Status</InputLabel>
+        <Select
+          name="status"
+          id="status"
+          label="Status"
+          style={{ minWidth: 300 }}
+        >
+          {statuses?.data.map((status) => (
+            <MenuItem value={status._id.toString()}>{status.label}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       <Button type="submit">Create order</Button>
     </Grid>
   );
