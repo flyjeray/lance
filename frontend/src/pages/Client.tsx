@@ -96,8 +96,9 @@ export const ClientPage = () => {
         defaultValue={client.data.description}
       />
       {isChanged && <Button type="submit">Save</Button>}
+      <Typography>Orders</Typography>
       {hasOrders ? (
-        <List component={Paper}>
+        <List component={Paper} style={{ width: '100%' }}>
           {orders?.data.map((order) => (
             <ListItem>
               <Link
@@ -119,7 +120,7 @@ export const ClientPage = () => {
         onClick={handleOpenDeletePopup}
         fullWidth={false}
       >
-        Delete
+        Delete client
       </Button>
 
       <Dialog open={deletePopupOpen} onClose={handleCloseDeletePopup}>
