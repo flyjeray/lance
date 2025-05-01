@@ -56,4 +56,11 @@ router.put(
   OrdersController.changeStatus
 );
 
+router.delete(
+  endpoints.delete,
+  AuthMiddleware.checkAuth,
+  validateQuery<SingleEntityGetPayload>(['id']),
+  OrdersController.delete
+);
+
 export { router as OrdersRouter };

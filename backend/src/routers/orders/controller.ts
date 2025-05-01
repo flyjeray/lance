@@ -223,4 +223,29 @@ export class OrdersController {
       return res.status(400).json({ error });
     }
   };
+
+  static delete = async (
+    req: Request<SingleEntityGetPayload>,
+    res: Response<APIResponse<string>, VerifiedUserLocals>
+  ) => {
+    const { id } = req.query;
+    const { user } = res.locals;
+
+    try {
+      const order = await OrderModel.findOne({
+        _id: id,
+        user_owner_id: user,
+      });
+
+      if (!order) {
+        return res.status(404).json({ error: `Order ${id} not found` });
+      }
+
+      await OrderModel.deleteOne({ _id: order._id });
+
+      return res.status(200).json({ data: 'success' });
+    } catch (error) {
+      return res.status(400).json({ error });
+    }
+  };
 }

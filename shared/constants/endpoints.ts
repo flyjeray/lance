@@ -23,6 +23,7 @@ const APIEndpoints = {
       changeClient: '/change_client',
       changeStatus: '/change_status',
       update: '/update',
+      delete: '/delete',
     },
   },
   clients: {

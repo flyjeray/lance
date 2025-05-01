@@ -41,6 +41,19 @@ export const useUpdateOrder = () => {
   });
 };
 
+export const useDeleteOrder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: OrdersAPI.delete,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [OrdersQueryKeys.GET_LIST],
+      });
+    },
+  });
+};
+
 export const useOrderList = (
   data: PaginationPayload & GetFilteredOrdersPayload
 ) =>

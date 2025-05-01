@@ -57,4 +57,11 @@ export class OrdersAPI {
         SuccessfulAPIResponse<OrderBase>
       >(prefix + endpoints.changeStatus, data)
       .then((res) => res.data);
+
+  static delete = (data: SingleEntityGetPayload) =>
+    axiosInstance
+      .delete<
+        SuccessfulAPIResponse<string>
+      >(prefix + endpoints.delete, { params: data })
+      .then((res) => res.data);
 }

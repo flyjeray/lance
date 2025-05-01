@@ -1,13 +1,17 @@
-import { Link, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import {
   useChangeOrderClient,
   useClientNameDictionary,
+  useDeleteOrder,
   useOrder,
   useUpdateOrder,
 } from '../hooks/query';
 import {
   Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
   FormControl,
   InputLabel,
   MenuItem,
@@ -19,14 +23,22 @@ import {
 import { useState } from 'react';
 
 export const OrderPage = () => {
-  const { id } = useParams();
+  const navigate = useNavigate();
+  const { id: paramsID } = useParams();
   const { data: clients } = useClientNameDictionary();
-  const { data: order } = useOrder({ id: id as string });
+  const { data: order } = useOrder({ id: paramsID as string });
   const { mutateAsync: changeClient } = useChangeOrderClient();
   const { mutateAsync: updateOrder } = useUpdateOrder();
+  const { mutateAsync: deleteOrder } = useDeleteOrder();
   const [isChanged, setIsChanged] = useState(false);
 
+  const [deletePopupOpen, setDeletePopupOpen] = useState(false);
+  const handleOpenDeletePopup = () => setDeletePopupOpen(true);
+  const handleCloseDeletePopup = () => setDeletePopupOpen(false);
+
   if (!order) return <p>No data</p>;
+
+  const id = order.data._id.toString();
 
   const handleChangeClient = (event: SelectChangeEvent) => {
     changeClient({
@@ -48,6 +60,14 @@ export const OrderPage = () => {
     }).then(() => {
       setIsChanged(false);
     });
+  };
+
+  const handleDeleteOrder = async () => {
+    const result = await deleteOrder({ id });
+
+    if (result.data === 'success') {
+      navigate('/orders/1');
+    }
   };
 
   return (
@@ -97,6 +117,27 @@ export const OrderPage = () => {
           ))}
         </Select>
       </FormControl>
+      <Button
+        type="button"
+        color="error"
+        onClick={handleOpenDeletePopup}
+        fullWidth={false}
+      >
+        Delete order
+      </Button>
+
+      <Dialog open={deletePopupOpen} onClose={handleCloseDeletePopup}>
+        <DialogTitle id="modal-modal-title" variant="h6" component="h2">
+          Are you sure to delete order "{order.data.title}" ({id.slice(0, 4)}
+          ...{id.slice(id.length - 4, id.length)})?
+        </DialogTitle>
+        <DialogActions>
+          <Button onClick={handleCloseDeletePopup}>Cancel</Button>
+          <Button color="error" onClick={handleDeleteOrder}>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
