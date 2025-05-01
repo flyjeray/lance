@@ -18,7 +18,7 @@ export const OrderPage = () => {
   const { id } = useParams();
   const { data: clients } = useClientNameDictionary();
   const { data: order } = useOrder({ id: id as string });
-  const { mutateAsync: changeClient } = useChangeOrderClient(id as string);
+  const { mutateAsync: changeClient } = useChangeOrderClient();
 
   if (!order) return <p>No data</p>;
 

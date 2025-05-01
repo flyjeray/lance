@@ -39,14 +39,14 @@ export const useOrder = (data: SingleEntityGetPayload) =>
     queryFn: () => OrdersAPI.getSingle(data),
   });
 
-export const useChangeOrderClient = (orderID: string) => {
+export const useChangeOrderClient = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: OrdersAPI.changeClient,
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: [OrdersQueryKeys.GET_SINGLE, orderID],
+        queryKey: [OrdersQueryKeys.GET_SINGLE, variables.orderID],
       });
       queryClient.invalidateQueries({
         queryKey: [ClientsQueryKeys.GET_ORDERS],
