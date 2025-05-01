@@ -22,6 +22,7 @@ const APIEndpoints = {
       getSingle: '/single',
       changeClient: '/change_client',
       changeStatus: '/change_status',
+      update: '/update',
     },
   },
   clients: {

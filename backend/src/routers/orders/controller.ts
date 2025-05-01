@@ -10,6 +10,7 @@ import {
   ChangeOrdersClientPayload,
   GetFilteredOrdersPayload,
   ChangeOrdersStatusPayload,
+  UpdateOrderPayload,
 } from '@lance/shared/models/api/orders';
 import { ClientModel } from '@lance/shared/models/client';
 import { OrderBase, OrderModel } from '@lance/shared/models/order';
@@ -45,6 +46,32 @@ export class OrdersController {
       });
       const saved = await order.save();
       return res.status(200).json({ data: saved });
+    } catch (error) {
+      return res.status(400).json({ error });
+    }
+  };
+
+  static update = async (
+    req: Request<object, object, UpdateOrderPayload>,
+    res: Response<APIResponse<OrderBase>, VerifiedUserLocals>
+  ) => {
+    const { id, data } = req.body;
+    const { user } = res.locals;
+
+    try {
+      const order = await OrderModel.findOne({
+        _id: id,
+        user_owner_id: user,
+      });
+
+      if (!order) {
+        return res.status(404).json({ error: 'Order not found' });
+      } else {
+        order.description = data.description || order.description;
+        order.title = data.title || order.title;
+        await order.save();
+        return res.status(200).json({ data: order });
+      }
     } catch (error) {
       return res.status(400).json({ error });
     }

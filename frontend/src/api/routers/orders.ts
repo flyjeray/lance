@@ -2,6 +2,7 @@ import {
   ChangeOrdersClientPayload,
   ChangeOrdersStatusPayload,
   CreateOrderPayload,
+  UpdateOrderPayload,
 } from '@lance/shared/models/api/orders';
 import { OrderBase } from '@lance/shared/models/order';
 import axiosInstance from '..';
@@ -19,6 +20,11 @@ export class OrdersAPI {
   static create = (data: CreateOrderPayload) =>
     axiosInstance
       .post<SuccessfulAPIResponse<OrderBase>>(prefix + endpoints.create, data)
+      .then((res) => res.data);
+
+  static update = (data: UpdateOrderPayload) =>
+    axiosInstance
+      .post<SuccessfulAPIResponse<OrderBase>>(prefix + endpoints.update, data)
       .then((res) => res.data);
 
   static getPaginated = (data: PaginationPayload) =>

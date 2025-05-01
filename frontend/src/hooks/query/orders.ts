@@ -25,6 +25,22 @@ export const useCreateOrder = () => {
   });
 };
 
+export const useUpdateOrder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: OrdersAPI.update,
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: [OrdersQueryKeys.GET_SINGLE, variables.id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [OrdersQueryKeys.GET_LIST],
+      });
+    },
+  });
+};
+
 export const useOrderList = (
   data: PaginationPayload & GetFilteredOrdersPayload
 ) =>

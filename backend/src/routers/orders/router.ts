@@ -7,6 +7,7 @@ import {
   ChangeOrdersClientPayload,
   ChangeOrdersStatusPayload,
   CreateOrderPayload,
+  UpdateOrderPayload,
 } from '@lance/shared/models/api/orders';
 import { SingleEntityGetPayload } from '@lance/shared/models/api/general';
 
@@ -19,6 +20,13 @@ router.post(
   AuthMiddleware.checkAuth,
   validatePayload<CreateOrderPayload>(['title', 'client', 'price', 'status']),
   OrdersController.create
+);
+
+router.post(
+  endpoints.update,
+  AuthMiddleware.checkAuth,
+  validatePayload<UpdateOrderPayload>(['id', 'data']),
+  OrdersController.update
 );
 
 router.get(
