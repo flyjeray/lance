@@ -29,6 +29,22 @@ export const useCreateClient = () => {
   });
 };
 
+export const useUpdateClient = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ClientsAPI.update,
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: [ClientsQueryKeys.GET_SINGLE, variables.id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [ClientsQueryKeys.GET_NAMES],
+      });
+    },
+  });
+};
+
 export const useDeleteClient = () => {
   const queryClient = useQueryClient();
 

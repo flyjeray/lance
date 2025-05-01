@@ -50,4 +50,10 @@ router.delete(
   ClientsController.delete
 );
 
+router.post(
+  endpoints.update,
+  AuthMiddleware.checkAuth,
+  ClientsController.update
+);
+
 export { router as ClientsRouter };

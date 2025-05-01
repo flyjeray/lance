@@ -33,6 +33,7 @@ const APIEndpoints = {
       nameDictionary: '/dictionary',
       getClientOrders: '/orders',
       delete: '/delete',
+      update: '/update',
     },
   },
   statuses: {

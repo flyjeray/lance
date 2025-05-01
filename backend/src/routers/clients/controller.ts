@@ -2,6 +2,7 @@ import { VerifiedUserLocals } from '@lance/shared/models/api/auth';
 import {
   ClientNameDictionary,
   CreateClientPayload,
+  UpdateClientPayload,
 } from '@lance/shared/models/api/clients';
 import {
   APIResponse,
@@ -25,6 +26,32 @@ export class ClientsController {
       const client = new ClientModel({ name, user_owner_id: user });
       const saved = await client.save();
       return res.status(200).json({ data: saved });
+    } catch (error) {
+      return res.status(400).json({ error });
+    }
+  };
+
+  static update = async (
+    req: Request<object, object, UpdateClientPayload>,
+    res: Response<APIResponse<Client>, VerifiedUserLocals>
+  ) => {
+    const { id, data } = req.body;
+    const { user } = res.locals;
+
+    try {
+      const client = await ClientModel.findOne({
+        _id: id,
+        user_owner_id: user,
+      });
+
+      if (!client) {
+        return res.status(404).json({ error: 'Client not found' });
+      } else {
+        client.description = data.description || client.description;
+        client.name = data.name || client.name;
+        await client.save();
+        return res.status(200).json({ data: client });
+      }
     } catch (error) {
       return res.status(400).json({ error });
     }

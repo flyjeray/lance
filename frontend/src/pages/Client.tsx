@@ -1,5 +1,10 @@
 import { Link, useNavigate, useParams } from 'react-router';
-import { useClient, useClientOrders, useDeleteClient } from '../hooks/query';
+import {
+  useClient,
+  useClientOrders,
+  useDeleteClient,
+  useUpdateClient,
+} from '../hooks/query';
 import {
   Box,
   Button,
@@ -11,6 +16,7 @@ import {
   List,
   ListItem,
   Paper,
+  TextField,
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
@@ -24,7 +30,9 @@ export const ClientPage = () => {
     page: '1',
     perPage: '10',
   });
+  const { mutateAsync: updateClient } = useUpdateClient();
   const { mutateAsync: deleteClient } = useDeleteClient();
+  const [isChanged, setIsChanged] = useState(false);
 
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const handleOpenDeletePopup = () => setDeletePopupOpen(true);
@@ -43,10 +51,51 @@ export const ClientPage = () => {
     }
   };
 
+  const handleUpdateClient = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const name = formData.get('name') as string;
+    const description = formData.get('description') as string;
+
+    updateClient({
+      id: client.data._id.toString(),
+      data: { name, description },
+    }).then(() => {
+      setIsChanged(false);
+    });
+  };
+
   return (
-    <Box display="flex" flexDirection="column" alignItems="flex-start" gap={3}>
-      <Typography variant="h2">{client.data.name}</Typography>
+    <Box
+      display="flex"
+      flexDirection="column"
+      component="form"
+      onSubmit={handleUpdateClient}
+      alignItems="flex-start"
+      gap={3}
+    >
       <Typography variant="caption">ID: {id}</Typography>
+      <TextField
+        variant="standard"
+        component="h2"
+        label="Name"
+        name="name"
+        fullWidth
+        onChange={() => setIsChanged(true)}
+        defaultValue={client.data.name}
+      />
+      <TextField
+        label="Description"
+        name="description"
+        multiline
+        minRows={6}
+        maxRows={6}
+        fullWidth
+        onChange={() => setIsChanged(true)}
+        defaultValue={client.data.description}
+      />
+      {isChanged && <Button type="submit">Save</Button>}
       {hasOrders ? (
         <List component={Paper}>
           {orders?.data.map((order) => (
@@ -64,7 +113,12 @@ export const ClientPage = () => {
       ) : (
         <Typography>No orders</Typography>
       )}
-      <Button color="error" onClick={handleOpenDeletePopup} fullWidth={false}>
+      <Button
+        type="button"
+        color="error"
+        onClick={handleOpenDeletePopup}
+        fullWidth={false}
+      >
         Delete
       </Button>
 

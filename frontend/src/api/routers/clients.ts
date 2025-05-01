@@ -9,6 +9,7 @@ import {
 import {
   ClientNameDictionary,
   CreateClientPayload,
+  UpdateClientPayload,
 } from '@lance/shared/models/api/clients';
 import { Client } from '@lance/shared/models/client';
 import { OrderBase } from '@lance/shared/models/order';
@@ -19,6 +20,11 @@ export class ClientsAPI {
   static create = (data: CreateClientPayload) =>
     axiosInstance
       .post<SuccessfulAPIResponse<Client>>(prefix + endpoints.create, data)
+      .then((res) => res.data);
+
+  static update = (data: UpdateClientPayload) =>
+    axiosInstance
+      .post<SuccessfulAPIResponse<Client>>(prefix + endpoints.update, data)
       .then((res) => res.data);
 
   static getPaginated = (data: PaginationPayload) =>
