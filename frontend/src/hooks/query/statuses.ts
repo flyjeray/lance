@@ -19,6 +19,19 @@ export const useCreateStatus = () => {
   });
 };
 
+export const useDeleteStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: StatusesAPI.delete,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [StatusesQueryKeys.GET],
+      });
+    },
+  });
+};
+
 export const useStatusList = () =>
   useQuery({
     queryKey: [StatusesQueryKeys.GET],

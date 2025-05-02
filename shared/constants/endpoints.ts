@@ -43,6 +43,7 @@ const APIEndpoints = {
     endpoints: {
       create: '/create',
       get: '/get',
+      delete: '/delete',
     },
   },
 } as const satisfies APIStructure;
