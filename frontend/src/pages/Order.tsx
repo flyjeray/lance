@@ -1,9 +1,11 @@
 import { Link, useNavigate, useParams } from 'react-router';
 import {
   useChangeOrderClient,
+  useChangeOrderStatus,
   useClientNameDictionary,
   useDeleteOrder,
   useOrder,
+  useStatusList,
   useUpdateOrder,
 } from '../hooks/query';
 import {
@@ -27,7 +29,9 @@ export const OrderPage = () => {
   const { id: paramsID } = useParams();
   const { data: clients } = useClientNameDictionary();
   const { data: order } = useOrder({ id: paramsID as string });
+  const { data: statuses } = useStatusList();
   const { mutateAsync: changeClient } = useChangeOrderClient();
+  const { mutateAsync: changeStatus } = useChangeOrderStatus();
   const { mutateAsync: updateOrder } = useUpdateOrder();
   const { mutateAsync: deleteOrder } = useDeleteOrder();
   const [isChanged, setIsChanged] = useState(false);
@@ -39,11 +43,21 @@ export const OrderPage = () => {
   if (!order) return <p>No data</p>;
 
   const id = order.data._id.toString();
+  const currentStatusLabel = statuses?.data.find(
+    (s) => s._id.toString() === order.data.status_id.toString()
+  );
 
   const handleChangeClient = (event: SelectChangeEvent) => {
     changeClient({
       orderID: order.data._id.toString(),
       newClientID: event.target.value,
+    });
+  };
+
+  const handleChangeStatus = (event: SelectChangeEvent) => {
+    changeStatus({
+      orderID: id,
+      newStatusID: event.target.value,
     });
   };
 
@@ -99,24 +113,54 @@ export const OrderPage = () => {
         defaultValue={order.data.description}
       />
       {isChanged && <Button type="submit">Save</Button>}
-      <Typography>
-        Current client:{' '}
-        <Link to={{ pathname: `/client/${order.data.client_id}` }}>
-          {clients?.data[order.data.client_id.toString()]}
-        </Link>
-      </Typography>
-      <FormControl>
-        <InputLabel>Change client</InputLabel>
-        <Select
-          label="Change client"
-          defaultValue={order.data.client_id.toString()}
-          onChange={handleChangeClient}
-        >
-          {Object.entries(clients?.data || {}).map(([id, name]) => (
-            <MenuItem value={id}>{name}</MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <Box
+        display="flex"
+        flexDirection="row"
+        width="100%"
+        justifyContent="space-between"
+        gap={16}
+      >
+        <Box display="flex" flex={1} flexDirection="column" gap={3}>
+          <Typography>
+            Current client:{' '}
+            <Link to={{ pathname: `/client/${order.data.client_id}` }}>
+              {clients?.data[order.data.client_id.toString()]}
+            </Link>
+          </Typography>
+
+          <FormControl>
+            <InputLabel>Change client</InputLabel>
+            <Select
+              label="Change client"
+              defaultValue={order.data.client_id.toString()}
+              onChange={handleChangeClient}
+            >
+              {Object.entries(clients?.data || {}).map(([id, name]) => (
+                <MenuItem value={id}>{name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+
+        <Box display="flex" flex={1} flexDirection="column" gap={3}>
+          <Typography>Current status: {currentStatusLabel?.label}</Typography>
+
+          <FormControl>
+            <InputLabel>Change status</InputLabel>
+            <Select
+              label="Change status"
+              defaultValue={order.data.status_id.toString()}
+              onChange={handleChangeStatus}
+            >
+              {statuses?.data.map((status) => (
+                <MenuItem value={status._id.toString()}>
+                  {status.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+      </Box>
       <Button
         type="button"
         color="error"
