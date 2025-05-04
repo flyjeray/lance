@@ -2,6 +2,7 @@ import {
   ChangeOrdersClientPayload,
   ChangeOrdersStatusPayload,
   CreateOrderPayload,
+  SwitchOrderCompletionStatusPayload,
   UpdateOrderPayload,
 } from '@lance/shared/models/api/orders';
 import { OrderBase } from '@lance/shared/models/order';
@@ -63,5 +64,12 @@ export class OrdersAPI {
       .delete<
         SuccessfulAPIResponse<string>
       >(prefix + endpoints.delete, { params: data })
+      .then((res) => res.data);
+
+  static switchCompleteStatus = (data: SwitchOrderCompletionStatusPayload) =>
+    axiosInstance
+      .put<
+        SuccessfulAPIResponse<string>
+      >(prefix + endpoints.switchCompleteStatus, data)
       .then((res) => res.data);
 }

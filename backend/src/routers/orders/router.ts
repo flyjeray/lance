@@ -49,4 +49,10 @@ router.delete(
   OrdersController.delete
 );
 
+router.put(
+  endpoints.switchCompleteStatus,
+  AuthMiddleware.checkAuth,
+  OrdersController.switchCompletionStatus
+);
+
 export { router as OrdersRouter };

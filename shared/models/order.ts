@@ -8,6 +8,7 @@ export type OrderBase = {
   client_id: Types.ObjectId;
   user_owner_id: Types.ObjectId;
   status_id: Types.ObjectId;
+  is_completed: boolean;
 };
 
 type OrderDocument = Document & OrderBase;
@@ -38,6 +39,11 @@ const orderSchema = new Schema<OrderDocument>({
     type: Schema.Types.ObjectId,
     ref: 'statuses',
     required: true,
+  },
+  is_completed: {
+    type: Boolean,
+    required: true,
+    default: false,
   },
 });
 

@@ -16,6 +16,8 @@ import {
   UpdateOrderPayloadSchema,
   ChangeOrdersClientPayloadSchema,
   ChangeOrdersStatusPayloadSchema,
+  SwitchOrderCompletionStatusPayload,
+  SwitchOrderCompletionStatusPayloadSchema,
 } from '@lance/shared/models/api/orders';
 import { ClientModel } from '@lance/shared/models/client';
 import { OrderBase, OrderModel } from '@lance/shared/models/order';
@@ -93,6 +95,7 @@ export class OrdersController {
         minPrice,
         maxPrice,
         statusID,
+        onlyCompleted,
       } = GetFilteredOrdersPayloadSchema.parse(req.query);
       const { user } = res.locals;
       const _page = Number(page);
@@ -114,6 +117,10 @@ export class OrdersController {
 
       if (statusID) {
         conditions.status_id = statusID;
+      }
+
+      if (onlyCompleted === '1') {
+        conditions.is_completed = true;
       }
 
       const orders = await OrderModel.find(conditions)
@@ -245,6 +252,31 @@ export class OrdersController {
       }
 
       await OrderModel.deleteOne({ _id: order._id });
+
+      return res.status(200).json({ data: 'success' });
+    } catch (error) {
+      return res.status(400).json({ error });
+    }
+  };
+
+  static switchCompletionStatus = async (
+    req: Request<object, object, SwitchOrderCompletionStatusPayload>,
+    res: Response<APIResponse<string>, VerifiedUserLocals>
+  ) => {
+    try {
+      const { id, value } = SwitchOrderCompletionStatusPayloadSchema.parse(
+        req.body
+      );
+      const { user } = res.locals;
+
+      const order = await OrderModel.findOneAndUpdate(
+        { _id: id, user_owner_id: user },
+        { is_completed: value }
+      );
+
+      if (!order) {
+        return res.status(404).json({ error: `Order ${id} not found` });
+      }
 
       return res.status(200).json({ data: 'success' });
     } catch (error) {

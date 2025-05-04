@@ -52,10 +52,21 @@ export const GetFilteredOrdersPayloadSchema = z
     minPrice: z.number(),
     maxPrice: z.number(),
     statusID: z.string(),
+    onlyCompleted: z.union([z.literal('0'), z.literal('1')]),
   })
   .partial()
   .merge(PaginationPayloadSchema);
 
 export type GetFilteredOrdersPayload = z.infer<
   typeof GetFilteredOrdersPayloadSchema
+>;
+
+export const SwitchOrderCompletionStatusPayloadSchema = z
+  .object({
+    value: z.boolean(),
+  })
+  .merge(SingleEntityGetPayloadSchema);
+
+export type SwitchOrderCompletionStatusPayload = z.infer<
+  typeof SwitchOrderCompletionStatusPayloadSchema
 >;

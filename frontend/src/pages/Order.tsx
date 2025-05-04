@@ -6,15 +6,18 @@ import {
   useDeleteOrder,
   useOrder,
   useStatusList,
+  useSwitchOrderCompletionStatus,
   useUpdateOrder,
 } from '../hooks/query';
 import {
   Box,
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogTitle,
   FormControl,
+  FormControlLabel,
   InputLabel,
   MenuItem,
   Select,
@@ -34,6 +37,8 @@ export const OrderPage = () => {
   const { mutateAsync: changeStatus } = useChangeOrderStatus();
   const { mutateAsync: updateOrder } = useUpdateOrder();
   const { mutateAsync: deleteOrder } = useDeleteOrder();
+  const { mutateAsync: switchCompleteStatus } =
+    useSwitchOrderCompletionStatus();
   const [isChanged, setIsChanged] = useState(false);
 
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
@@ -58,6 +63,13 @@ export const OrderPage = () => {
     changeStatus({
       orderID: id,
       newStatusID: event.target.value,
+    });
+  };
+
+  const handleSwitchCompleted = () => {
+    switchCompleteStatus({
+      id: order.data._id.toString(),
+      value: !order.data.is_completed,
     });
   };
 
@@ -94,6 +106,7 @@ export const OrderPage = () => {
       gap={3}
     >
       <Typography variant="caption">ID: {id}</Typography>
+
       <TextField
         variant="standard"
         label="Title"
@@ -113,6 +126,17 @@ export const OrderPage = () => {
         defaultValue={order.data.description}
       />
       {isChanged && <Button type="submit">Save</Button>}
+
+      <FormControlLabel
+        control={
+          <Checkbox
+            defaultChecked={order.data.is_completed}
+            onChange={handleSwitchCompleted}
+          />
+        }
+        label="Is Completed?"
+      />
+
       <Box
         display="flex"
         flexDirection="row"
@@ -161,6 +185,7 @@ export const OrderPage = () => {
           </FormControl>
         </Box>
       </Box>
+
       <Button
         type="button"
         color="error"

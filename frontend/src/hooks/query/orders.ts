@@ -54,9 +54,7 @@ export const useDeleteOrder = () => {
   });
 };
 
-export const useOrderList = (
-  data: PaginationPayload & GetFilteredOrdersPayload
-) =>
+export const useOrderList = (data: GetFilteredOrdersPayload) =>
   useQuery({
     queryKey: [OrdersQueryKeys.GET_LIST, data],
     queryFn: () => OrdersAPI.getPaginated(data),
@@ -92,6 +90,22 @@ export const useChangeOrderStatus = () => {
     onSuccess: (_, payload) => {
       queryClient.invalidateQueries({
         queryKey: [OrdersQueryKeys.GET_SINGLE, payload.orderID],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [ClientsQueryKeys.GET_ORDERS],
+      });
+    },
+  });
+};
+
+export const useSwitchOrderCompletionStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: OrdersAPI.switchCompleteStatus,
+    onSuccess: (_, payload) => {
+      queryClient.invalidateQueries({
+        queryKey: [OrdersQueryKeys.GET_SINGLE, payload.id],
       });
       queryClient.invalidateQueries({
         queryKey: [ClientsQueryKeys.GET_ORDERS],

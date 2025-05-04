@@ -7,6 +7,7 @@ import {
 } from '../hooks/query';
 import {
   Box,
+  Checkbox,
   MenuItem,
   Pagination,
   Paper,
@@ -68,6 +69,12 @@ export const OrdersTablePage = () => {
         })) || [],
       onChange: (statusID) => setFilters((prev) => ({ ...prev, statusID })),
     },
+    {
+      type: TableFilterFieldType.Checkbox,
+      label: 'Only Completed',
+      onChange: (checked) =>
+        setFilters((prev) => ({ ...prev, onlyCompleted: checked ? '1' : '0' })),
+    },
   ];
 
   return (
@@ -95,6 +102,7 @@ export const OrdersTablePage = () => {
                 <TableCell align="left">Price</TableCell>
                 <TableCell align="left">Client</TableCell>
                 <TableCell align="left">Status</TableCell>
+                <TableCell align="left">Is Completed</TableCell>
               </TableRow>
             </TableHead>
 
@@ -138,6 +146,9 @@ export const OrdersTablePage = () => {
                           </MenuItem>
                         ))}
                       </Select>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Checkbox disabled defaultChecked={order.is_completed} />
                     </TableCell>
                   </TableRow>
                 );

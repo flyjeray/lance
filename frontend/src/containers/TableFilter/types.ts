@@ -1,6 +1,7 @@
 export enum TableFilterFieldType {
   Select = 'SELECT',
   Number = 'NUMBER',
+  Checkbox = 'CHECKBOX',
 }
 
 type TableFilterBase = {
@@ -23,6 +24,12 @@ export type TableNumberFilterProps = TableFilterBase & {
   onChange: (value: number | undefined) => void;
 };
 
+export type TableCheckboxFilterProps = TableFilterBase & {
+  type: TableFilterFieldType.Checkbox;
+  onChange: (value: boolean | undefined) => void;
+};
+
 export type SingleTableFilterProps =
   | TableSelectFilterProps
-  | TableNumberFilterProps;
+  | TableNumberFilterProps
+  | TableCheckboxFilterProps;
