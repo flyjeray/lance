@@ -1,9 +1,16 @@
-import { SingleEntityGetPayload } from './general';
+import { SingleEntityGetPayloadSchema } from './general';
+import z from 'zod';
 
-export type CreateStatusPayload = {
-  label: string;
-};
+export const CreateStatusPayloadSchema = z.object({
+  label: z.string(),
+});
 
-export type DeleteStatusPayload = SingleEntityGetPayload & {
-  replacement_id: string;
-};
+export type CreateStatusPayload = z.infer<typeof CreateStatusPayloadSchema>;
+
+export const DeleteStatusPayloadSchema = z
+  .object({
+    replacement_id: z.string(),
+  })
+  .merge(SingleEntityGetPayloadSchema);
+
+export type DeleteStatusPayload = z.infer<typeof DeleteStatusPayloadSchema>;

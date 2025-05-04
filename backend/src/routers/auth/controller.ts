@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 import { config } from '@/config';
 import {
   AuthCredentials,
+  AuthCredentialsSchema,
   AuthMeResponse,
   VerifiedUserLocals,
 } from '@lance/shared/models/api/auth';
@@ -14,9 +15,9 @@ class AuthController {
     req: Request<object, object, AuthCredentials>,
     res: Response<APIResponse<string>>
   ) => {
-    const { login, password } = req.body;
-
     try {
+      const { login, password } = AuthCredentialsSchema.parse(req.body);
+
       const user = await UserModel.findOne({ login });
       if (!user) {
         return res.status(404).json({ error: `User ${login} not found` });
@@ -43,7 +44,7 @@ class AuthController {
   };
 
   static me = async (
-    req: Request,
+    _: Request,
     res: Response<APIResponse<AuthMeResponse>, VerifiedUserLocals>
   ) => {
     try {
@@ -60,7 +61,7 @@ class AuthController {
     }
   };
 
-  static logout = async (req: Request, res: Response<APIResponse<string>>) => {
+  static logout = async (_: Request, res: Response<APIResponse<string>>) => {
     res.clearCookie('token', {
       httpOnly: true,
       sameSite: 'lax',

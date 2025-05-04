@@ -1,12 +1,34 @@
-import { Client } from '../client';
-import { SingleEntityGetPayload } from './general';
+import {
+  PaginationPayloadSchema,
+  SingleEntityGetPayloadSchema,
+} from './general';
+import z from 'zod';
 
-export type CreateClientPayload = {
-  name: string;
-};
+export const CreateClientPayloadSchema = z.object({
+  name: z.string(),
+});
+
+export type CreateClientPayload = z.infer<typeof CreateClientPayloadSchema>;
 
 export type ClientNameDictionary = Record<string, string>;
 
-export type UpdateClientPayload = SingleEntityGetPayload & {
-  data: Partial<Omit<Client, '_id' | 'user_owner_id'>>;
-};
+export const UpdateClientPayloadSchema = z
+  .object({
+    data: z
+      .object({
+        name: z.string(),
+        description: z.string(),
+      })
+      .partial(),
+  })
+  .merge(SingleEntityGetPayloadSchema);
+
+export type UpdateClientPayload = z.infer<typeof UpdateClientPayloadSchema>;
+
+export const GetClientOrdersPayloadSchema = SingleEntityGetPayloadSchema.merge(
+  PaginationPayloadSchema
+);
+
+export type GetClientOrdersPayload = z.infer<
+  typeof GetClientOrdersPayloadSchema
+>;

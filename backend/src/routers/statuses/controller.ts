@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import {
   CreateStatusPayload,
+  CreateStatusPayloadSchema,
   DeleteStatusPayload,
+  DeleteStatusPayloadSchema,
 } from '@lance/shared/models/api/statuses';
 import { Status, StatusModel } from '@lance/shared/models/status';
 import { APIResponse } from '@lance/shared/models/api/general';
@@ -13,10 +15,9 @@ export class StatusesController {
     req: Request<object, object, CreateStatusPayload>,
     res: Response<APIResponse<Status>, VerifiedUserLocals>
   ) => {
-    const { label } = req.body;
-    const { user } = res.locals;
-
     try {
+      const { label } = CreateStatusPayloadSchema.parse(req.body);
+      const { user } = res.locals;
       const status = new StatusModel({
         label,
         user_owner_id: user,
@@ -34,9 +35,9 @@ export class StatusesController {
     _: Request,
     res: Response<APIResponse<Status[]>, VerifiedUserLocals>
   ) => {
-    const { user } = res.locals;
-
     try {
+      const { user } = res.locals;
+
       const list = await StatusModel.find({ user_owner_id: user });
       return res.status(200).json({ data: list });
     } catch (error) {
@@ -48,16 +49,15 @@ export class StatusesController {
     req: Request<DeleteStatusPayload>,
     res: Response<APIResponse<string>, VerifiedUserLocals>
   ) => {
-    const { id, replacement_id } = req.query;
-    const { user } = res.locals;
-
-    if (id === replacement_id) {
-      return res
-        .status(422)
-        .json({ error: 'IDs of statuses cannot be the same' });
-    }
-
     try {
+      const { id, replacement_id } = DeleteStatusPayloadSchema.parse(req.query);
+      const { user } = res.locals;
+
+      if (id === replacement_id) {
+        return res
+          .status(422)
+          .json({ error: 'IDs of statuses cannot be the same' });
+      }
       const status = await StatusModel.findOne({
         _id: id,
         user_owner_id: user,

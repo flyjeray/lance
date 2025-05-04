@@ -1,13 +1,19 @@
+import z from 'zod';
+
 export type SuccessfulAPIResponse<T> = { data: T };
 export type SuccessfulPaginatedAPIResponse<T> = SuccessfulAPIResponse<T> & {
   pagination: PaginationResponse;
 };
 type FailedAPIResponse = { error: unknown };
 
-export type PaginationPayload = {
-  page?: string;
-  perPage?: string;
-};
+export const PaginationPayloadSchema = z
+  .object({
+    page: z.string(),
+    perPage: z.string(),
+  })
+  .partial();
+
+export type PaginationPayload = z.infer<typeof PaginationPayloadSchema>;
 
 export type PaginationResponse = {
   total: number;
@@ -16,9 +22,13 @@ export type PaginationResponse = {
   totalPages: number;
 };
 
-export type SingleEntityGetPayload = {
-  id: string;
-};
+export const SingleEntityGetPayloadSchema = z.object({
+  id: z.string(),
+});
+
+export type SingleEntityGetPayload = z.infer<
+  typeof SingleEntityGetPayloadSchema
+>;
 
 export type APIResponse<T> = SuccessfulAPIResponse<T> | FailedAPIResponse;
 

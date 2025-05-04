@@ -2,13 +2,18 @@ import { VerifiedUserLocals } from '@lance/shared/models/api/auth';
 import {
   ClientNameDictionary,
   CreateClientPayload,
+  CreateClientPayloadSchema,
+  GetClientOrdersPayload,
+  GetClientOrdersPayloadSchema,
   UpdateClientPayload,
 } from '@lance/shared/models/api/clients';
 import {
   APIResponse,
   PaginatedAPIResponse,
   PaginationPayload,
+  PaginationPayloadSchema,
   SingleEntityGetPayload,
+  SingleEntityGetPayloadSchema,
 } from '@lance/shared/models/api/general';
 import { Client, ClientModel } from '@lance/shared/models/client';
 import { OrderBase, OrderModel } from '@lance/shared/models/order';
@@ -19,10 +24,9 @@ export class ClientsController {
     req: Request<object, object, CreateClientPayload>,
     res: Response<APIResponse<Client>, VerifiedUserLocals>
   ) => {
-    const { name } = req.body;
-    const { user } = res.locals;
-
     try {
+      const { name } = CreateClientPayloadSchema.parse(req.body);
+      const { user } = res.locals;
       const client = new ClientModel({ name, user_owner_id: user });
       const saved = await client.save();
       return res.status(200).json({ data: saved });
@@ -61,10 +65,11 @@ export class ClientsController {
     req: Request<PaginationPayload>,
     res: Response<PaginatedAPIResponse<Client[]>, VerifiedUserLocals>
   ) => {
-    const { page = 1, perPage = 10 } = req.query;
-    const { user } = res.locals;
-
     try {
+      const { page = 1, perPage = 10 } = PaginationPayloadSchema.parse(
+        req.query
+      );
+      const { user } = res.locals;
       const _page = Number(page);
       const _perPage = Number(perPage);
 
@@ -91,10 +96,9 @@ export class ClientsController {
     req: Request<SingleEntityGetPayload>,
     res: Response<APIResponse<Client>, VerifiedUserLocals>
   ) => {
-    const { id } = req.query;
-    const { user } = res.locals;
-
     try {
+      const { id } = SingleEntityGetPayloadSchema.parse(req.query);
+      const { user } = res.locals;
       const client = await ClientModel.findOne({
         user_owner_id: user,
         _id: id,
@@ -114,9 +118,9 @@ export class ClientsController {
     _: Request,
     res: Response<APIResponse<ClientNameDictionary>, VerifiedUserLocals>
   ) => {
-    const { user } = res.locals;
-
     try {
+      const { user } = res.locals;
+
       const clients = await ClientModel.find({ user_owner_id: user });
 
       const names: Record<string, string> = {};
@@ -131,13 +135,14 @@ export class ClientsController {
   };
 
   static getOrders = async (
-    req: Request<SingleEntityGetPayload & PaginationPayload>,
+    req: Request<GetClientOrdersPayload>,
     res: Response<PaginatedAPIResponse<OrderBase[]>, VerifiedUserLocals>
   ) => {
-    const { id, page, perPage } = req.query;
-    const { user } = res.locals;
-
     try {
+      const { id, page, perPage } = GetClientOrdersPayloadSchema.parse(
+        req.query
+      );
+      const { user } = res.locals;
       const _page = Number(page);
       const _perPage = Number(perPage);
 
@@ -167,10 +172,9 @@ export class ClientsController {
     req: Request<SingleEntityGetPayload>,
     res: Response<APIResponse<string>, VerifiedUserLocals>
   ) => {
-    const { id } = req.query;
-    const { user } = res.locals;
-
     try {
+      const { id } = SingleEntityGetPayloadSchema.parse(req.query);
+      const { user } = res.locals;
       const client = await ClientModel.findOne({
         _id: id,
         user_owner_id: user,

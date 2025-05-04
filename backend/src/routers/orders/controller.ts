@@ -2,8 +2,8 @@ import { VerifiedUserLocals } from '@lance/shared/models/api/auth';
 import {
   APIResponse,
   PaginatedAPIResponse,
-  PaginationPayload,
   SingleEntityGetPayload,
+  SingleEntityGetPayloadSchema,
 } from '@lance/shared/models/api/general';
 import {
   CreateOrderPayload,
@@ -11,6 +11,11 @@ import {
   GetFilteredOrdersPayload,
   ChangeOrdersStatusPayload,
   UpdateOrderPayload,
+  GetFilteredOrdersPayloadSchema,
+  CreateOrderPayloadSchema,
+  UpdateOrderPayloadSchema,
+  ChangeOrdersClientPayloadSchema,
+  ChangeOrdersStatusPayloadSchema,
 } from '@lance/shared/models/api/orders';
 import { ClientModel } from '@lance/shared/models/client';
 import { OrderBase, OrderModel } from '@lance/shared/models/order';
@@ -23,10 +28,10 @@ export class OrdersController {
     req: Request<object, object, CreateOrderPayload>,
     res: Response<APIResponse<OrderBase>, VerifiedUserLocals>
   ) => {
-    const { title, description, client, price, status } = req.body;
-    const { user } = res.locals;
-
     try {
+      const { title, description, client, price, status } =
+        CreateOrderPayloadSchema.parse(req.body);
+      const { user } = res.locals;
       const foundClient = await ClientModel.findOne({
         user_owner_id: user,
         _id: client,
@@ -55,10 +60,9 @@ export class OrdersController {
     req: Request<object, object, UpdateOrderPayload>,
     res: Response<APIResponse<OrderBase>, VerifiedUserLocals>
   ) => {
-    const { id, data } = req.body;
-    const { user } = res.locals;
-
     try {
+      const { id, data } = UpdateOrderPayloadSchema.parse(req.body);
+      const { user } = res.locals;
       const order = await OrderModel.findOne({
         _id: id,
         user_owner_id: user,
@@ -78,20 +82,19 @@ export class OrdersController {
   };
 
   static get = async (
-    req: Request<GetFilteredOrdersPayload & PaginationPayload>,
+    req: Request<GetFilteredOrdersPayload>,
     res: Response<PaginatedAPIResponse<OrderBase[]>, VerifiedUserLocals>
   ) => {
-    const {
-      page = 1,
-      perPage = 10,
-      clientID,
-      minPrice,
-      maxPrice,
-      statusID,
-    } = req.query;
-    const { user } = res.locals;
-
     try {
+      const {
+        page = 1,
+        perPage = 10,
+        clientID,
+        minPrice,
+        maxPrice,
+        statusID,
+      } = GetFilteredOrdersPayloadSchema.parse(req.query);
+      const { user } = res.locals;
       const _page = Number(page);
       const _perPage = Number(perPage);
 
@@ -136,10 +139,9 @@ export class OrdersController {
     req: Request<SingleEntityGetPayload>,
     res: Response<APIResponse<OrderBase>, VerifiedUserLocals>
   ) => {
-    const { id } = req.query;
-    const { user } = res.locals;
-
     try {
+      const { id } = SingleEntityGetPayloadSchema.parse(req.query);
+      const { user } = res.locals;
       const order = await OrderModel.findOne({ user_owner_id: user, _id: id });
 
       if (order) {
@@ -158,10 +160,11 @@ export class OrdersController {
     req: Request<object, object, ChangeOrdersClientPayload>,
     res: Response<APIResponse<OrderBase>, VerifiedUserLocals>
   ) => {
-    const { orderID, newClientID } = req.body;
-    const { user } = res.locals;
-
     try {
+      const { orderID, newClientID } = ChangeOrdersClientPayloadSchema.parse(
+        req.body
+      );
+      const { user } = res.locals;
       const order = await OrderModel.findOne({
         _id: orderID,
         user_owner_id: user,
@@ -193,10 +196,11 @@ export class OrdersController {
     req: Request<object, object, ChangeOrdersStatusPayload>,
     res: Response<APIResponse<OrderBase>, VerifiedUserLocals>
   ) => {
-    const { orderID, newStatusID } = req.body;
-    const { user } = res.locals;
-
     try {
+      const { orderID, newStatusID } = ChangeOrdersStatusPayloadSchema.parse(
+        req.body
+      );
+      const { user } = res.locals;
       const order = await OrderModel.findOne({
         _id: orderID,
         user_owner_id: user,
@@ -228,10 +232,9 @@ export class OrdersController {
     req: Request<SingleEntityGetPayload>,
     res: Response<APIResponse<string>, VerifiedUserLocals>
   ) => {
-    const { id } = req.query;
-    const { user } = res.locals;
-
     try {
+      const { id } = SingleEntityGetPayloadSchema.parse(req.query);
+      const { user } = res.locals;
       const order = await OrderModel.findOne({
         _id: id,
         user_owner_id: user,
