@@ -148,7 +148,7 @@ export const OrdersTablePage = () => {
                       </Select>
                     </TableCell>
                     <TableCell align="left">
-                      <Checkbox disabled defaultChecked={order.is_completed} />
+                      <Checkbox disabled checked={order.is_completed} />
                     </TableCell>
                   </TableRow>
                 );

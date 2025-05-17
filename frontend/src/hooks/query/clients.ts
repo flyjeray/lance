@@ -36,6 +36,10 @@ export const useUpdateClient = () => {
     mutationFn: ClientsAPI.update,
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
+        queryKey: [ClientsQueryKeys.GET_LIST],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
         queryKey: [ClientsQueryKeys.GET_SINGLE, variables.id],
       });
       queryClient.invalidateQueries({

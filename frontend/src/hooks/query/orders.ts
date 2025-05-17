@@ -1,9 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { OrdersAPI } from '../../api/routers/orders';
-import {
-  PaginationPayload,
-  SingleEntityGetPayload,
-} from '@lance/shared/models/api/general';
+import { SingleEntityGetPayload } from '@lance/shared/models/api/general';
 import { ClientsQueryKeys } from './clients';
 import { GetFilteredOrdersPayload } from '@lance/shared/models/api/orders';
 
@@ -108,7 +105,8 @@ export const useSwitchOrderCompletionStatus = () => {
         queryKey: [OrdersQueryKeys.GET_SINGLE, payload.id],
       });
       queryClient.invalidateQueries({
-        queryKey: [ClientsQueryKeys.GET_ORDERS],
+        queryKey: [OrdersQueryKeys.GET_LIST],
+        exact: false,
       });
     },
   });
