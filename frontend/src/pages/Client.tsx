@@ -1,21 +1,31 @@
 import { Link, useNavigate, useParams } from 'react-router';
 import {
+  useChangeOrderStatus,
   useClient,
   useClientOrders,
   useDeleteClient,
+  useStatusList,
   useUpdateClient,
 } from '../hooks/query';
 import {
   Box,
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  List,
-  ListItem,
+  MenuItem,
+  Pagination,
   Paper,
+  Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
   Typography,
 } from '@mui/material';
@@ -26,14 +36,18 @@ import { UpdateClientPayload } from '@lance/shared/models/api/clients';
 export const ClientPage = () => {
   const { id: queryID } = useParams();
   const navigate = useNavigate();
+  const [ordersPage, setOrdersPage] = useState(1);
+
   const { data: client } = useClient({ id: queryID as string });
   const { data: orders } = useClientOrders({
     id: queryID as string,
-    page: '1',
-    perPage: '10',
+    page: ordersPage.toString(),
+    perPage: '5',
   });
   const { mutateAsync: updateClient } = useUpdateClient();
   const { mutateAsync: deleteClient } = useDeleteClient();
+  const { data: statuses } = useStatusList();
+  const { mutateAsync: changeStatus } = useChangeOrderStatus();
 
   const {
     register,
@@ -103,19 +117,73 @@ export const ClientPage = () => {
       {isDirty && <Button type="submit">Save</Button>}
       <Typography>Orders</Typography>
       {hasOrders ? (
-        <List component={Paper} style={{ width: '100%' }}>
-          {orders?.data.map((order) => (
-            <ListItem>
-              <Link
-                to={{
-                  pathname: `/order/${order._id}`,
-                }}
-              >
-                <Typography>{order.title}</Typography>
-              </Link>
-            </ListItem>
-          ))}
-        </List>
+        <>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell>Title</TableCell>
+                  <TableCell align="left">Description</TableCell>
+                  <TableCell align="left">Price</TableCell>
+                  <TableCell align="left">Status</TableCell>
+                  <TableCell align="left">Is Completed</TableCell>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {orders?.data.map((order) => (
+                  <TableRow
+                    key={`row-order-${order._id}`}
+                    sx={{
+                      '&:last-child td, &:last-child th': { border: 0 },
+                    }}
+                  >
+                    <TableCell width={1}>{order._id.toString()}</TableCell>
+                    <TableCell component="th" scope="row">
+                      <Link to={{ pathname: `/order/${order._id}` }}>
+                        {order.title}
+                      </Link>
+                    </TableCell>
+                    <TableCell align="left">
+                      {order.description || '-'}
+                    </TableCell>
+                    <TableCell align="left">
+                      {order.price ? `${order.price}` : '-'}
+                    </TableCell>
+                    <TableCell align="left">
+                      <Select
+                        defaultValue={order.status_id?.toString()}
+                        onChange={(event) => {
+                          changeStatus({
+                            orderID: order._id.toString(),
+                            newStatusID: event.target.value,
+                          });
+                        }}
+                      >
+                        {statuses?.data.map((status) => (
+                          <MenuItem value={status._id.toString()}>
+                            {status.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Checkbox disabled checked={order.is_completed} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Pagination
+            page={orders.pagination.page}
+            count={orders.pagination.totalPages}
+            onChange={(_, page) => {
+              setOrdersPage(page);
+            }}
+          />
+        </>
       ) : (
         <Typography>No orders</Typography>
       )}
