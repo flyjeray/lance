@@ -26,6 +26,8 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { UpdateOrderPayload } from '@lance/shared/models/api/orders';
 
 export const OrderPage = () => {
   const navigate = useNavigate();
@@ -39,7 +41,14 @@ export const OrderPage = () => {
   const { mutateAsync: deleteOrder } = useDeleteOrder();
   const { mutateAsync: switchCompleteStatus } =
     useSwitchOrderCompletionStatus();
-  const [isChanged, setIsChanged] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { isDirty },
+    reset,
+    watch,
+  } = useForm<UpdateOrderPayload['data']>();
 
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const handleOpenDeletePopup = () => setDeletePopupOpen(true);
@@ -73,18 +82,16 @@ export const OrderPage = () => {
     });
   };
 
-  const handleUpdateOrder = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const formData = new FormData(event.currentTarget);
-    const title = formData.get('title') as string;
-    const description = formData.get('description') as string;
+  const handleUpdateOrder: SubmitHandler<UpdateOrderPayload['data']> = (
+    data
+  ) => {
+    const { title, description } = data;
 
     updateOrder({
       id: order.data._id.toString(),
       data: { title, description },
     }).then(() => {
-      setIsChanged(false);
+      reset(watch(), { keepValues: false, keepDirty: false });
     });
   };
 
@@ -99,7 +106,7 @@ export const OrderPage = () => {
   return (
     <Box
       component="form"
-      onSubmit={handleUpdateOrder}
+      onSubmit={handleSubmit(handleUpdateOrder)}
       display="flex"
       flexDirection="column"
       alignItems="flex-start"
@@ -110,22 +117,20 @@ export const OrderPage = () => {
       <TextField
         variant="standard"
         label="Title"
-        name="title"
         fullWidth
-        onChange={() => setIsChanged(true)}
         defaultValue={order.data.title}
+        {...register('title')}
       />
       <TextField
         label="Description"
-        name="description"
         multiline
         minRows={6}
         maxRows={6}
         fullWidth
-        onChange={() => setIsChanged(true)}
         defaultValue={order.data.description}
+        {...register('description')}
       />
-      {isChanged && <Button type="submit">Save</Button>}
+      {isDirty && <Button type="submit">Save</Button>}
 
       <FormControlLabel
         control={

@@ -20,6 +20,8 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { UpdateClientPayload } from '@lance/shared/models/api/clients';
 
 export const ClientPage = () => {
   const { id: queryID } = useParams();
@@ -32,7 +34,14 @@ export const ClientPage = () => {
   });
   const { mutateAsync: updateClient } = useUpdateClient();
   const { mutateAsync: deleteClient } = useDeleteClient();
-  const [isChanged, setIsChanged] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { isDirty },
+    reset,
+    watch,
+  } = useForm<UpdateClientPayload['data']>();
 
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const handleOpenDeletePopup = () => setDeletePopupOpen(true);
@@ -51,18 +60,16 @@ export const ClientPage = () => {
     }
   };
 
-  const handleUpdateClient = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const formData = new FormData(event.currentTarget);
-    const name = formData.get('name') as string;
-    const description = formData.get('description') as string;
+  const handleUpdateClient: SubmitHandler<UpdateClientPayload['data']> = (
+    data
+  ) => {
+    const { name, description } = data;
 
     updateClient({
       id: client.data._id.toString(),
       data: { name, description },
     }).then(() => {
-      setIsChanged(false);
+      reset(watch(), { keepValues: false, keepDirty: false });
     });
   };
 
@@ -71,7 +78,7 @@ export const ClientPage = () => {
       display="flex"
       flexDirection="column"
       component="form"
-      onSubmit={handleUpdateClient}
+      onSubmit={handleSubmit(handleUpdateClient)}
       alignItems="flex-start"
       gap={3}
     >
@@ -80,22 +87,20 @@ export const ClientPage = () => {
         variant="standard"
         component="h2"
         label="Name"
-        name="name"
         fullWidth
-        onChange={() => setIsChanged(true)}
         defaultValue={client.data.name}
+        {...register('name')}
       />
       <TextField
         label="Description"
-        name="description"
         multiline
         minRows={6}
         maxRows={6}
         fullWidth
-        onChange={() => setIsChanged(true)}
         defaultValue={client.data.description}
+        {...register('description')}
       />
-      {isChanged && <Button type="submit">Save</Button>}
+      {isDirty && <Button type="submit">Save</Button>}
       <Typography>Orders</Typography>
       {hasOrders ? (
         <List component={Paper} style={{ width: '100%' }}>

@@ -1,16 +1,14 @@
 import { Box, Button, TextField } from '@mui/material';
 import { useLogin } from '../../hooks/query';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { AuthCredentials } from '@lance/shared/models/api/auth';
 
 export const LoginForm = () => {
   const { mutateAsync: auth } = useLogin();
+  const { register, handleSubmit } = useForm<AuthCredentials>();
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const formData = new FormData(event.currentTarget);
-    const login = formData.get('login') as string;
-    const password = formData.get('password') as string;
-
+  const handleLogin: SubmitHandler<AuthCredentials> = (data) => {
+    const { login, password } = data;
     auth({ login, password });
   };
 
@@ -18,23 +16,23 @@ export const LoginForm = () => {
     <Box
       display="flex"
       component="form"
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(handleLogin)}
       flexDirection="column"
       gap={3}
     >
       <TextField
         type="text"
         id="login"
-        name="login"
         placeholder="Login"
         required
+        {...register('login')}
       />
       <TextField
         type="password"
         id="password"
-        name="password"
         placeholder="Password"
         required
+        {...register('password')}
       />
       <Button type="submit">Login</Button>
     </Box>

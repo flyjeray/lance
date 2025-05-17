@@ -1,15 +1,15 @@
 import { Button, Grid, TextField } from '@mui/material';
 import { useCreateStatus } from '../../hooks/query';
+import { CreateStatusPayload } from '@lance/shared/models/api/statuses';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 export const StatusCreateForm = () => {
   const { mutateAsync: createStatus } = useCreateStatus();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const { register, handleSubmit } = useForm<CreateStatusPayload>();
 
-    const formData = new FormData(event.currentTarget);
-    const label = formData.get('label') as string;
-
+  const handleCreateStatus: SubmitHandler<CreateStatusPayload> = (data) => {
+    const { label } = data;
     createStatus({ label });
   };
 
@@ -17,16 +17,16 @@ export const StatusCreateForm = () => {
     <Grid
       container
       component="form"
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(handleCreateStatus)}
       spacing={3}
       width="100%"
     >
       <TextField
         type="text"
         id="label"
-        name="label"
         placeholder="Status label"
         required
+        {...register('label')}
       />
       <Button type="submit">Create status</Button>
     </Grid>
