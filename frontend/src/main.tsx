@@ -40,7 +40,7 @@ const App = () => {
       queries: {
         retry: false,
         staleTime: Infinity,
-        refetchOnMount: false,
+        refetchOnMount: true,
         refetchOnWindowFocus: false,
       },
     },
